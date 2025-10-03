@@ -1,0 +1,111 @@
+{%- capture swatches -%}
+	{% assign swatchProductsList = product.metafields.swatch.related_products.value %}
+	{% for swatchProduct in swatchProductsList %}
+		{% assign swatchName = swatchProduct.metafields.swatch.name.value | default: swatchProduct.title %}
+		{% assign swatchImage = swatchProduct.metafields.swatch.image | default: swatchProduct.featured_image %}
+
+		<div class="swatch-item{% if product.url == swatchProduct.url %} selected{% endif %}">
+		  <a href="{{ swatchProduct.url }}">
+	  		{{ swatchImage | image_url: width: 120 | image_tag: class: 'swatch-image', loading: 'lazy', alt: swatchProduct.title }}
+		  </a>
+		  <span class="swatch-name">{{ swatchName }}</span>
+	  </div>
+	{% endfor %}
+{% endcapture -%}
+
+{%- if swatches != blank -%}
+  <div class="related-swatches">
+	<div class="related-swatches__label">
+		<p>
+			<span class="label">Styles</span>
+		</p>
+	</div>
+
+	<div class="related-swatches__swatches">
+		{{ swatches }}
+	</div>
+</div>
+{%- endif -%}
+
+
+
+{% style %}
+/**
+ * ----------------------------------------------------------------------------
+ * Related swatches v2 - Ecomm Lab
+ * ----------------------------------------------------------------------------
+ */
+.related-swatches {
+  margin-bottom: 25px;
+}
+
+.related-swatches__swatches {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.swatch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 85px;
+  text-align: center;
+  font-size: 14px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.related-swatches .swatch-item a {
+  height: 60px;
+  width: 60px;
+  display: inline-block;
+  position: relative;
+  box-sizing: content-box!important;
+  margin: 0.5rem
+}
+
+.related-swatches .swatch-item.selected a::after {
+  content: '';
+  width: calc(100% + 9px);
+  height: calc(100% + 9px);
+  position: absolute;
+  border: 2px solid #003163;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.related-swatches .swatch-item.selected {
+  font-weight: 600;
+}
+
+
+.related-swatches .swatch-item a:hover::after {
+  content: '';
+  width: calc(100% + 9px);
+  height: calc(100% + 9px);
+  position: absolute;
+  border: 2px solid #003163;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 50%;
+}
+
+.related-swatches .swatch-item a:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.related-swatches .swatch-item a img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.related-swatches span.swatch-name {
+    line-height: 1.5em;
+}
+
+{% endstyle %}

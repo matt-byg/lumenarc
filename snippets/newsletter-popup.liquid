@@ -1,0 +1,32 @@
+<div class="js-newsletter-popup">
+  <div class="newsletter-popup__content">
+    <a id="newsletter" href="#target"></a>
+    <span id="target">
+      <div class="popup-container imagePosition--{{ settings.popup_image_position }} {% if settings.newsletter_popup_image == blank %}no-image{% endif %}">
+        {% if settings.newsletter_popup_image != blank %}
+          <div class="popup-image">
+            <img src="{{ settings.newsletter_popup_image | img_url: '600x' }}" alt="{% if settings.newsletter_popup_image.alt != blank %}{{ settings.newsletter_popup_image.alt }}{% else %}{{ settings.newsletter_popup_title | escape }}{% endif %}" class="lazyload lazyload--fade-in"/>
+          </div>
+        {% endif %}
+
+        <div class="popup-text">
+          {% if settings.newsletter_popup_title != blank %}
+            <p class="headline">{{ settings.newsletter_popup_title | escape }}</p>
+          {% endif %}
+
+          {% if settings.newsletter_popup_text != blank %}
+            {{ settings.newsletter_popup_text }}
+          {% endif %}
+
+          {% if settings.newsletter_popup_form %}
+            {%
+              render 'newsletter',
+              display_first_name: settings.display_first_name,
+              display_last_name: settings.display_last_name
+            %}
+          {% endif %}
+        </div>
+      </div>
+    </span>
+  </div>
+</div>

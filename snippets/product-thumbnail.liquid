@@ -1,0 +1,135 @@
+{%- assign collection_handles = product.collections | map: 'handle' -%}
+{%- assign featured_image = product.featured_media -%}
+{%- assign static_image = product.featured_media.preview_image -%}
+{%- assign images = product.media -%}
+{%- assign variant = product.selected_or_first_available_variant -%}
+
+{% if product.featured_image.alt contains 'youtube' or product.featured_image.alt contains 'vimeo' %}
+  {%- assign alt_text = product.title -%}
+{% else %}
+  {%- assign alt_text = product.featured_media.alt | escape -%}
+{% endif %}
+
+<div class="{% render 'column-width', value: products_per_row %} column
+            {% if settings.mobile_products_per_row == '1' %}
+              medium-down--one-whole
+            {% else %}
+              medium-down--one-half
+            {% endif %}
+            thumbnail price_align--{{ settings.collection_price_position }}
+            {% if settings.collection_secondary_image != blank and images[1] != blank %}
+              has-secondary-media-swap
+            {% endif %}">
+
+  <a href="{{ product.url | within: collection }}">
+    <div class="relative product_image">
+      <div class="product_container">
+        <div class="image__container">
+          {%
+            render 'image-element',
+            image: static_image,
+            alt: alt_text,
+          %}
+          <div class="transition-helper">
+          </div>
+          {% if settings.collection_secondary_image != blank and images[1] != blank %}
+            {% if product.media[1].media_type == 'external_video' %}
+              <div class="external-video__container lazyload secondary-media-hidden video-on-hover">
+                <div class="youtube-wrapper" data-youtube-video>
+                  {{ product.media[1] | external_video_tag }}
+                </div>
+              </div>
+            {% elsif product.media[1].media_type == 'video' %}
+              <div class="video__container lazyload secondary-media-hidden video-on-hover" data-html5-video>
+                {{ product.media[1] | video_tag: controls: false }}
+              </div>
+            {% else %}
+              {%
+                render 'image-element',
+                image: images[1].preview_image,
+                alt: alt_text,
+                additional_classes: 'secondary secondary-media-hidden',
+              %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      {% if settings.quick_shop_enabled %}
+        <div data-fancybox data-src="#fancybox-product-{{ product.id }}" class="quick_shop action_button" data-gallery="product-{{ product.id }}-gallery" data-url="{{ product.url }}">
+          {{ 'collections.general.quick_shop' | t }}
+        </div>
+      {% endif %}
+    </div>
+    <div class="info">
+      <div class="info__text">
+        <span class="title">{{ product.title }}</span>
+        {% if settings.enable_shopify_collection_badges %}
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        {% endif %}
+        {% if settings.display_vendor_collection %}
+          <div class="vendor">
+            <span>{{ product.vendor }}</span>
+          </div>
+        {% endif %}
+      </div>
+      {% unless collection_handles contains 'coming-soon' %}
+        <span class="price {% if product.compare_at_price_min > product.price_min %}sale{% endif %}">
+          {% if product.available %}
+            {% if product.price_varies and product.price_min > 0 %}
+              <small><em>{{ 'products.general.from' | t }}</em></small>
+            {% endif %}
+            {% if product.price_min > 0 %}
+              <span class="money">{% render 'price-element', price: product.price_min %}</span>
+            {% else %}
+              {{ settings.free_price_text }}
+            {% endif %}
+            {% if product.compare_at_price_min > product.price_min %}
+              <span class="was-price">
+                <span class="money">
+                  {% render 'price-element', price: product.compare_at_price_min %}
+                </span>
+              </span>
+            {% endif %}
+          {% else %}
+            <span class="sold_out">{{ 'products.product.sold_out' | t }}</span>
+          {% endif %}
+        </span>
+        {% assign variant_for_unit_price = product.variants | sort: 'price' | first %}
+        {%
+          render 'unit-price',
+          item: variant_for_unit_price,
+          class: 'product-details__unit-price'
+        %}
+      {% endunless %}
+    </div>
+
+    <div class="banner_holder">
+      {% if settings.sale_banner_enabled and product.compare_at_price_min > product.price_min %}
+        <div class="sale_banner">
+          {{ 'collections.general.sale' | t }}
+        </div>
+      {% endif %}
+      {% if collection_handles contains 'new' %}
+        <div class="new_banner">
+          {{ 'collections.general.new' | t }}
+        </div>
+      {% endif %}
+      {% if collection_handles contains 'coming-soon' %}
+        <div class="new_banner">
+          {{ 'collections.general.coming_soon' | t }}
+        </div>
+      {% endif %}
+      {% if collection_handles contains 'pre-order' %}
+        <div class="new_banner">
+          {{ 'collections.general.pre_order' | t }}
+        </div>
+      {% endif %}
+    </div>
+  </a>
+
+  {% render 'collection-swatch', product: product %}
+</div>
+
+{% if settings.quick_shop_enabled %}
+  <div id="fancybox-product-{{ product.id }}" data-url="{{ product.url }}" class="modal fancybox-modal product-{{ product.id }}"></div>
+{% endif %}

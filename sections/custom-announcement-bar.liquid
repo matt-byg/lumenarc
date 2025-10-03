@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.top }}px;
+    padding-bottom: {{ section.settings.bottom }}px;
+  }
+
+  @media (max-width: 768px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.mobile_top }}px;
+      padding-bottom: {{ section.settings.mobile_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+<section class="custom-announcement-bar section-{{ section.id }}-padding">
+  <div class="section">
+    <div class="swiper-button-prev"></div>
+    <div class="swiper vertical-slider-{{ section.id }}">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          <div class="swiper-slide">
+            <p class="custom-announcement__text center">
+              {{ block.settings.text }}
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="swiper-button-next"></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  var verticalSlider = new Swiper(".vertical-slider-{{ section.id }}", {
+    direction: "vertical",
+    loop: true,
+    navigation: {
+      nextEl: ".section-{{ section.id }}-padding .swiper-button-next",
+      prevEl: ".section-{{ section.id }}-padding .swiper-button-prev",
+    },
+  });
+</script>
+
+{% schema %}
+  {
+    "name": "Custom Top Bar",
+    "class": "section-top-bar",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Section Spacing"
+      },
+      {
+        "type": "range",
+        "id": "top",
+        "label": "Desktop Top Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 20,
+        "unit": "px",
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "bottom",
+        "label": "Desktop Bottom Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 20,
+        "unit": "px",
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "mobile_top",
+        "label": "Mobile Top Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 10,
+        "unit": "px",
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "mobile_bottom",
+        "label": "Mobile Bottom Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 10,
+        "unit": "px",
+        "step": 1
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "Add The Announcement Text Here"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Custom Top Bar",
+        "blocks": [
+          {
+            "type": "text"
+          },
+          {
+            "type": "text"
+          },
+          {
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

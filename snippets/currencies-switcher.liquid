@@ -1,0 +1,297 @@
+{% comment %}
+Optional values
+additional_classes: <string>
+{% endcomment %}
+{% assign unique_id = "now" | date: "%N" | modulo: 1000 %}
+
+{% if currency_selector == true or locale_selector == true %}
+  <div class="localization {{ additional_classes }}">
+    <div class="selectors-form__wrap">
+      {%- if locale_selector == true -%}
+        <noscript>
+          {%- form 'localization', class: 'selectors-form' -%}
+            <details class="disclosure__details">
+              <summary>
+                <button
+                  type="button"
+                  class="disclosure__toggle disclosure__toggle--i18n"
+                  aria-expanded="false"
+                  aria-controls="lang-list"
+                  aria-describedby="lang-heading"
+                  data-disclosure-toggle
+                  tabindex="-1"
+                >
+                  {{ form.current_locale.endonym_name }} <span class="icon-down-arrow"></span>
+                </button>
+              </summary>
+              <div class="selectors-form__item selectors-form__locale">
+                <h2 class="hidden" id="lang-heading">
+                  {{ 'general.language.dropdown_label' | t }}
+                </h2>
+
+                <input
+                  type="hidden"
+                  name="locale_code"
+                  id="LocaleSelector"
+                  value="{{ form.current_locale.iso_code }}"
+                  data-disclosure-input
+                />
+                <div
+                  class="disclosure disclosure--i18n"
+                  data-disclosure
+                  data-disclosure-locale
+                >
+                  <div class="disclosure__list-wrap animated fadeIn">
+                    <div class="disclosure-list">
+                      {% for locale in form.available_locales %}
+                        <div class="disclosure-list__item-wrapper">
+                          <input
+                            type="radio"
+                            id="{{ locale.iso_code }}"
+                            class="disclosure-list__item disclosure-list__item--radio"
+                            name="locale_code"
+                            value="{{ locale.iso_code }}"
+                            {% if locale.iso_code == form.current_locale.iso_code %}checked{% endif %}
+                          >
+                          <label
+                            class="disclosure-list__item--label"
+                            for="{{ locale.iso_code }}">
+                            {{ locale.endonym_name | capitalize }}
+                          </label>
+                        </div>
+                      {% endfor %}
+                      <button
+                        class="disclosure__submit"
+                        type="submit"
+                      >
+                        {{ 'general.password_page.signup_form_submit' | t }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          {% endform %}
+        </noscript>
+
+        {%- form 'localization', class: 'selectors-form selectors-form--no-js-hidden' -%}
+          <div class="selectors-form__item selectors-form__locale">
+            <h2
+              class="hidden"
+              id="lang-heading"
+            >
+              {{ 'general.language.dropdown_label' | t }}
+            </h2>
+
+            <input
+              type="hidden"
+              name="locale_code"
+              id="LocaleSelector"
+              value="{{ form.current_locale.iso_code }}"
+              data-disclosure-input
+            />
+
+            <div
+              class="disclosure disclosure--i18n"
+              data-disclosure
+              data-disclosure-locale
+            >
+              <button
+                type="button"
+                class="disclosure__toggle disclosure__toggle--i18n"
+                aria-expanded="false"
+                aria-controls="lang-list"
+                aria-describedby="lang-heading"
+                data-disclosure-toggle
+              >
+                {{ form.current_locale.endonym_name }} <span class="icon-down-arrow"></span>
+              </button>
+              <div class="disclosure__list-wrap animated fadeIn">
+                <ul
+                  id="lang-list"
+                  class="disclosure-list"
+                  data-disclosure-list
+                >
+                  {% for locale in form.available_locales %}
+                    <li
+                      class="
+                        disclosure-list__item
+                        {% if locale.iso_code == form.current_locale.iso_code %}
+                          disclosure-list__item--current
+                        {% endif %}
+                      "
+                    >
+                      <button
+                        type="submit"
+                        class="disclosure__button"
+                        name="locale_code"
+                        value="{{ locale.iso_code }}"
+                      >
+                        {{ locale.endonym_name }}
+                      </button>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endform %}
+      {%- endif -%}
+
+      {%- if currency_selector == true -%}
+        <noscript>
+          {%- form 'localization', class: 'selectors-form' -%}
+            <details class="disclosure__details">
+              <summary>
+                <button
+                  type="button"
+                  class="disclosure__toggle disclosure__toggle--country"
+                  aria-expanded="false"
+                  aria-controls="country-list"
+                  aria-describedby="country-heading"
+                  data-disclosure-toggle
+                  tabindex="-1"
+                >
+                {{ localization.country.name }} ({{ localization.country.currency.iso_code }}{% if localization.country.currency.symbol %} {{ localization.country.currency.symbol }}{%- endif -%}) <span class="icon-down-arrow"></span>
+                </button>
+              </summary>
+              <div
+                class="
+                  selectors-form__item
+                  selectors-form__country
+                "
+              >
+                <h2
+                  class="hidden"
+                  id="country-heading"
+                >
+                  {{ 'general.country.dropdown_label' | t }}
+                </h2>
+
+                <input
+                  type="hidden"
+                  name="country_code"
+                  id="CountrySelector-{{ unique_id }}"
+                  value="{{ localization.country.currency.iso_code }}"
+                  data-disclosure-input
+                />
+
+                <div class="disclosure disclosure--country" data-disclosure data-disclosure-country>
+                  <div class="disclosure__list-wrap animated fadeIn">
+                    <div class="disclosure-list">
+                      {% for country in localization.available_countries %}
+                        <div class="disclosure-list__item-wrapper">
+                          <input
+                            type="radio"
+                            id="{{ country.iso_code }}"
+                            class="disclosure-list__item disclosure-list__item--radio"
+                            name="country_code"
+                            value="{{ country.iso_code }}"
+                            {% if country.iso_code == localization.country.iso_code %}
+                              checked
+                            {% endif %}
+                          >
+                          <label
+                            for="{{ country.iso_code }}"
+                            class="disclosure-list__item--label"
+                          >
+                            {{ country.name }} ({{ country.iso_code }}{% if country.currency.symbol %} {{ country.currency.symbol }}{%- endif -%})
+                          </label>
+                        </div>
+                      {%- endfor -%}
+                      <button
+                        class="disclosure__submit"
+                        type="submit"
+                      >
+                        {{ 'general.password_page.signup_form_submit' | t }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          {% endform %}
+        </noscript>
+
+        {%- form 'localization', class: 'selectors-form selectors-form--no-js-hidden' -%}
+          <div
+            class="
+              selectors-form__item
+              selectors-form__country
+            "
+          >
+            <h2
+              class="hidden"
+              id="country-heading"
+            >
+              {{ 'general.country.dropdown_label' | t }}
+            </h2>
+
+            <input
+              type="hidden"
+              name="country_code"
+              id="CountrySelector-{{ unique_id }}"
+              value="{{ localization.country.iso_code }}"
+              data-disclosure-input
+            />
+
+            <div
+              class="
+                disclosure
+                disclosure--country
+              "
+              data-disclosure
+              data-disclosure-country
+            >
+              <button
+                type="button"
+                class="
+                  disclosure__toggle
+                  disclosure__toggle--country
+                "
+                aria-expanded="false"
+                aria-controls="country-list"
+                aria-describedby="country-heading"
+                data-disclosure-toggle
+              >
+              {{ localization.country.name }} ({{ localization.country.currency.iso_code }}
+              {% if localization.country.currency.symbol %} {{ localization.country.currency.symbol }}{%- endif -%}) <span class="icon-down-arrow"></span>
+              </button>
+              <div
+                class="
+                  disclosure__list-wrap
+                  animated
+                  fadeIn
+                "
+              >
+                <ul
+                  id="country-list"
+                  class="disclosure-list"
+                  data-disclosure-list
+                >
+                  {% for country in localization.available_countries %}
+                    <li
+                      class="
+                        disclosure-list__item
+                        {% if country.iso_code == localization.country.iso_code %}disclosure-list__item--current{% endif %}
+                      "
+                    >
+                      <button
+                        type="submit"
+                        class="disclosure__button"
+                        name="country_code"
+                        value="{{ country.iso_code }}"
+                      >
+                        {{ country.name }} ({{ country.currency.iso_code }}{% if country.currency.symbol %} {{ country.currency.symbol }}{%- endif -%})
+                      </button>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endform %}
+      {%- endif -%}
+    </div>
+  </div>
+{% endif %}

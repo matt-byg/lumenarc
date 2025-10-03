@@ -1,0 +1,313 @@
+{%- liquid
+  assign locale_selector = false
+  assign currency_selector = false
+  assign show_follow_on_shop = false
+  assign show_footer_disclosure = false
+
+  if section.settings.show_currency_selector
+    assign currency_selector = true
+  endif
+
+  if section.settings.show_locale_selector and shop.published_locales.size > 1
+    assign locale_selector = true
+  endif
+
+  if shop.features.follow_on_shop? and section.settings.show_follow_on_shop
+    assign show_follow_on_shop = true
+  endif
+
+  if currency_selector or locale_selector or show_follow_on_shop
+    assign show_footer_disclosure = true
+  endif
+-%}
+
+<footer class="footer lazyload bcg">
+  <section class="section">
+    <div class="container">
+      <div class="footer__menu footer__menu--vertical one-fifth column medium-down--one-whole text-align-center">
+        {% if linklists[section.settings.footer_linklist_2] != blank %}
+          <h6>{{ linklists[section.settings.footer_linklist_2].title }}</h6>
+          <ul>
+            {% for link in linklists[section.settings.footer_linklist_2].links %}
+              <li>
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+
+              {% for sub_link in link.links %}
+                <li>
+                  <a href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                </li>
+
+                {% for sub_sub_link in sub_link.links %}
+                  <li>
+                    <a href="{{ sub_sub_link.url }}">{{ sub_sub_link.title }}</a>
+                  </li>
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div class="footer__newsletter three-fifths columns medium-down--one-whole text-align-center">
+        {% if section.settings.footer_newsletter %}
+          {% if section.settings.newsletter_heading != blank %}
+            <h6>{{ section.settings.newsletter_heading }}</h6>
+          {% endif %}
+
+          {% if section.settings.newsletter_richtext != blank %}
+            <div class="newsletter-text">
+              {{ section.settings.newsletter_richtext }}
+            </div>
+          {% endif %}
+
+          {% render 'newsletter',
+                  display_first_name: section.settings.display_first_name,
+                  display_last_name: section.settings.display_last_name
+          %}
+
+          {% if section.settings.footer_social_icons %}
+            <div class="social_icons">
+              {% render 'social-icons' %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="footer__content-page one-fifth column medium-down--one-whole text-align--{{ section.settings.footer_alignment }}">
+        {% if section.settings.title != blank %}
+          <h6>{{ section.settings.title }}</h6>
+        {% endif %}
+
+        {% if section.settings.footer_content_right != blank %}
+          {{ section.settings.footer_content_right }}
+        {% endif %}
+
+        {% if section.settings.footer_content_page != blank %}
+          <h6>{{ pages[section.settings.footer_content_page].title }}</h6>
+          {{ pages[section.settings.footer_content_page].content }}
+        {% endif %}
+      </div>
+
+      <div
+        class="
+          footer__disclosure
+          {% if show_footer_disclosure %}footer__disclosure--true{% endif %}
+          one-whole
+          column
+          text-align-center
+        "
+      >
+        {% if section.settings.footer_social_icons %}
+          <hr />
+        {% endif %}
+
+        {% if linklists[section.settings.footer_linklist_1] != blank %}
+          <ul class="footer__menu">
+            {% for link in linklists[section.settings.footer_linklist_1].links %}
+              <li>
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+
+              {% for sub_link in link.links %}
+                <li>
+                  <a href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                </li>
+
+                {% for sub_sub_link in sub_link.links %}
+                  <li>
+                    <a href="{{ sub_sub_link.url }}">{{ sub_sub_link.title }}</a>
+                  </li>
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {%- if show_footer_disclosure -%}
+          <div class="footer__disclosure__selectors-fos-wrapper">
+            {%- if currency_selector or locale_selector -%}
+              {%
+                render 'currencies-switcher',
+                locale_selector: locale_selector,
+                currency_selector: currency_selector,
+              %}
+            {%- endif -%}
+            {%- if show_follow_on_shop -%}
+              {{ shop | login_button: action: 'follow' }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <p class="credits">
+          &copy; {{ "now" | date: "%Y" }} {{ shop.name | link_to: routes.root_url }}.
+          {{ section.settings.copyright_text | escape }}
+          {{ powered_by_link }}
+        </p>
+
+        {% if section.settings.display_payment_methods %}
+          <div class="payment_methods">
+            {% for type in shop.enabled_payment_types %}
+              {{ type | payment_type_svg_tag: class:'payment-icon' }}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</footer>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "class": "shopify-section--footer",
+    "settings": [
+     {
+        "type": "header",
+        "content": "Left column"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_linklist_2",
+        "label": "Footer menu",
+        "info": "This menu won't show drop-down items",
+        "default": "footer"
+      },
+      {
+        "type": "header",
+        "content": "Center column"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_linklist_1",
+        "label": "Footer menu",
+        "info": "This menu won't show drop-down items"
+      },
+      {
+        "type": "header",
+        "content": "Right column"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Text column"
+      },
+      {
+        "type": "richtext",
+        "id": "footer_content_right",
+        "label": "Text",
+        "default": "<p>This right-hand column can be used to include some&nbsp;additional text, such as an address or contact info.<\/p>"
+      },
+      {
+        "type": "page",
+        "id": "footer_content_page",
+        "label": "Content page"
+      },
+      {
+        "type": "select",
+        "id": "footer_alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Newsletter"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_newsletter",
+        "label": "Show newsletter form",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "newsletter_heading",
+        "label": "Heading",
+        "default": "Sign up for our newsletter"
+      },
+      {
+        "type": "richtext",
+        "id": "newsletter_richtext",
+        "label": "Text",
+        "default": "<p>Sign up to get the latest on sales, new releases and more…</p>"
+      },
+      {
+        "type": "checkbox",
+        "id": "display_first_name",
+        "label": "Show first name",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "display_last_name",
+        "label": "Show last name",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_social_icons",
+        "label": "Show social media icons",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Sub footer"
+      },
+      {
+        "type": "checkbox",
+        "id": "display_payment_methods",
+        "label": "Show payment method icons",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "copyright_text",
+        "label": "Copyright text"
+      },
+      {
+        "type": "header",
+        "content": "Language selector",
+        "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_locale_selector",
+        "label": "Show language selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Country selector",
+        "info": "To add a country, go to your [payment settings.](/admin/settings/payments)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_selector",
+        "label": "Show country selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Follow on Shop",
+        "info": "Display follow button for your storefront on the Shop app. [Learn more](https:\/\/help.shopify.com\/manual\/online-store\/themes\/customizing-themes\/follow-on-shop)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_follow_on_shop",
+        "label": "Enable Follow on Shop",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

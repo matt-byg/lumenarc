@@ -1,0 +1,165 @@
+{% comment %}
+** Collection list - dynamic **
+- Draggable section
+- Uses blocks
+{% endcomment %}
+
+{% comment %} Content settings {% endcomment %}
+{%- assign title = section.settings.title -%}
+{%- assign blocks = section.blocks -%}
+{% comment %} End content settings {% endcomment %}
+
+<section class="section">
+  <div class="container">
+    {% if blocks.size > 0 %}
+      {% if title != blank %}
+        <div class="one-whole column">
+          <h2 class="section-header home text-align--center text-align--center">{{ title }}</h2>
+        </div>
+      {% endif %}
+
+      {% for block in blocks %}
+        {% comment %} Content settings {% endcomment %}
+        {%- assign collection = collections[block.settings.feature_collection] -%}
+        {% comment %} End content settings {% endcomment %}
+
+        {% if block.settings.image %}
+          {%- assign collection_image = block.settings.image -%}
+          {%- assign collection_image_alt = block.settings.image.alt | escape -%}
+        {% elsif collection.image != blank %}
+          {%- assign collection_image = collection.image -%}
+          {%- assign collection_image_alt = collection.title | escape -%}
+        {% else collection.empty? == false %}
+          {%- assign collection_image = collection.products.first.featured_media.preview_image -%}
+          {%- assign collection_image_alt = collection.products.first.featured_media.preview_image.alt | escape -%}
+        {% endif %}
+
+        <div class="{% render 'column-width', value: section.settings.frontpage_collections_per_row %} {% if settings.mobile_products_per_row == '1' %}medium-down--one-whole{% else %}medium-down--one-half{% endif %} column thumbnail {% if section.settings.collection_count == blank and section.settings.frontpage_collections_title == blank %}blank{% endif %} price_align--{{ settings.collection_price_position }}" {{ block.shopify_attributes }}>
+          <a href="{{ collection.url }}" title="{{ collection.title }}">
+            <div class="relative product_image">
+              {% if collection_image != blank %}
+                <div class="image__container">
+                  {%
+                    render 'image-element',
+                    image: collection_image.src,
+                    alt: collection_image_alt,
+                  %}
+                </div>
+              {% else %}
+                {% if forloop.index < 7 %}
+                  {% capture placeholder_collection %}collection-{{ forloop.index }}{% endcapture %}
+                {% else %}
+                  {%- assign placeholder_collection = 'collection-1' -%}
+                {% endif %}
+                {{ placeholder_collection | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+
+            <div class="info">
+              <div class="info__text">
+                {% if section.settings.frontpage_collections_title %}
+                    <span class="title">
+                    {% if collection != blank %}
+                      {{ collection.title }}
+                    {% else %}
+                      {{ "homepage.onboarding.collection_title" | t }}
+                    {% endif %}
+                    </span>
+                {% endif %}
+              </div>
+              {% if section.settings.collection_count %}
+                <span class="price">
+                {% if collection != blank %}
+                  {{ 'layout.counts.items_with_count' | t: count: collection.all_products_count }}
+                {% else %}
+                  {{ 'layout.counts.items_with_count' | t: count: 3 }}
+                {% endif %}
+                </span>
+              {% endif %}
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Collection list",
+    "class": "shopify-section--list-collections",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection list"
+      },
+      {
+        "type": "range",
+        "id": "frontpage_collections_per_row",
+        "label": "Collections per row",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "frontpage_collections_title",
+        "label": "Show collection title",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_count",
+        "label": "Show collection product count",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "feature_collection",
+            "label": "Collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "800 x 800px recommended"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Collection list",
+      "category": "Collection",
+      "settings": {
+
+      },
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }],
+    "enabled_on": {
+      "templates": [
+        "index",
+        "product",
+        "page"
+      ]
+    }
+  }
+{% endschema %}

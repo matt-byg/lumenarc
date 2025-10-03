@@ -1,0 +1,222 @@
+{% if product.metafields.custom.specifications_file != blank %}
+<script src="https://cdn.shopify.com/s/files/1/0698/2601/9560/files/papaparse.min.js?v=1726677864"></script>
+<style>
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.top }}px;
+    padding-bottom: {{ section.settings.bottom }}px;
+  }
+
+  @media (max-width: 768px) {
+    .section-{{ section.id }} {
+      padding-top: {{ section.settings.top | divided_by: 2 }}px;
+      padding-bottom: {{ section.settings.bottom | divided_by: 2 }}px;
+    }
+  }
+</style>
+
+<section class="section-{{ section.id }} specification-table">
+  <div class="container">
+    <div class="one-whole column specification-table-grid">
+      <div class="table">
+        <h2 class="center">Specifications</h2>
+        <table id="specification-table">
+          <tbody>
+            <tr>
+              <th>
+                <span>Supplier</span>
+              </th>
+              <td>
+                <span>Mercator</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Model Number</span>
+              </th>
+              <td>
+                <span>MG5031BLK</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Dimmable</span>
+              </th>
+              <td>
+                <span>Yes - When Used With Dimmable Globes + Wall Dimming Mechanism</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Primary Colour</span>
+              </th>
+              <td>
+                <span>Black</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Model Name</span>
+              </th>
+              <td>
+                <span>Pinto</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>IP Rating</span>
+              </th>
+              <td>
+                <span>IP20 - For Indoor Installation Only</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Height Adjustable</span>
+              </th>
+              <td>
+                <span>Yes - By The Installing Electrician</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Primary Material</span>
+              </th>
+              <td>
+                <span>Metal</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Number Of Lights</span>
+              </th>
+              <td>
+                <span>1</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Globe Included</span>
+              </th>
+              <td>
+                <span>No</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Max Globe Wattage</span>
+              </th>
+              <td>
+                <span>40W</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Globe Base</span>
+              </th>
+              <td>
+                <span>E27/ES/Edison Screw</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span>Input Voltage</span>
+              </th>
+              <td>
+                <span>240V</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="download">
+        <h2>Downloads</h2>
+        <a href="{{ product.metafields.custom.specifications_file }}" class="button" target="_blank" downlaod>
+          <span class="file-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20px" height="20px" viewBox="0 0 402.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+              <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#71C049" stroke="none">
+                <path d="M505 5108 c-27 -5 -87 -27 -133 -48 -150 -71 -263 -214 -298 -379 -21 -99 -21 -4143 0 -4242 46 -214 226 -389 440 -428 41 -8 508 -11 1500 -11 1198 0 1452 3 1507 14 209 45 380 216 425 425 11 55 14 326 14 1623 l0 1557 -652 3 -653 3 -57 29 c-69 35 -128 94 -165 166 l-28 55 -3 623 -3 622 -922 -1 c-536 -1 -943 -5 -972 -11z m2644 -2006 c55 -27 76 -64 76 -132 0 -68 -21 -105 -76 -132 -32 -17 -108 -18 -1169 -18 -1061 0 -1137 1 -1169 18 -55 27 -76 64 -76 132 0 68 21 105 76 132 32 17 108 18 1169 18 1061 0 1137 -1 1169 -18z m0 -800 c55 -27 76 -64 76 -132 0 -68 -21 -105 -76 -132 -32 -17 -108 -18 -1169 -18 -1061 0 -1137 1 -1169 18 -55 27 -76 64 -76 132 0 68 21 105 76 132 32 17 108 18 1169 18 1061 0 1137 -1 1169 -18z m-1469 -801 c38 -20 80 -88 80 -131 0 -43 -42 -111 -80 -131 -32 -18 -64 -19 -435 -19 -361 0 -403 2 -434 18 -55 27 -76 64 -76 132 0 68 21 105 76 132 31 16 73 18 434 18 371 0 403 -1 435 -19z"/>
+                <path d="M2700 4502 c0 -520 1 -550 18 -566 17 -15 70 -16 597 -14 l578 3 -49 63 c-27 35 -277 278 -556 541 -448 423 -557 521 -582 521 -3 0 -6 -247 -6 -548z"/>
+              </g>
+            </svg>
+          </span>
+          <span>Product Specifications</span>
+          <span class="downlod-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+              <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#fff" stroke="none">
+                <path d="M2495 4786 c-37 -17 -70 -52 -84 -89 -8 -20 -11 -467 -11 -1450 l0 -1422 -442 442 c-480 478 -464 465 -555 448 -49 -9 -109 -69 -118 -118 -18 -93 -44 -61 603 -709 648 -648 616 -620 709 -603 34 5 107 76 635 603 647 648 621 616 603 709 -9 49 -69 109 -118 118 -91 17 -75 30 -554 -448 l-443 -441 -2 1436 c-3 1433 -3 1437 -24 1464 -11 15 -32 37 -46 47 -34 25 -113 32 -153 13z"/>
+                <path d="M415 1426 c-41 -18 -83 -69 -90 -109 -4 -18 -5 -196 -3 -397 l3 -365 34 -63 c38 -70 69 -100 145 -140 l51 -27 2005 0 2005 0 51 27 c76 40 107 70 145 140 l34 63 0 392 c0 380 -1 392 -21 419 -39 53 -71 69 -134 69 -63 0 -95 -16 -134 -69 -20 -26 -21 -42 -24 -377 l-3 -349 -1919 0 -1919 0 -3 349 c-3 335 -4 351 -24 377 -11 15 -32 37 -46 47 -33 25 -113 32 -153 13z"/>
+              </g>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+      function handlePapaParse () {
+      // (PART A) FETCH CSV FROM SERVER
+      Papa.parse("{{product.metafields.custom.specifications_file}}", {
+        download: true,
+        skipEmptyLines: true,
+    
+        // (PART B) DRAW CSV FILE
+        complete : csv => {
+          // (B1) GET + RESET HTML TABLE
+          var table = document.getElementById("specification-table");
+          table.innerHTML = "";
+    
+          // (B2) DRAW TABLE ROWS
+          for (let row of csv.data) {
+            let tr = table.insertRow();
+            for (let cell of row) {
+              let td = tr.insertCell();
+              td.innerHTML = cell;
+            }
+          }
+        }
+      });
+    }
+    handlePapaParse()
+  })
+})()
+</script>
+{% endif %}
+{% schema %}
+  {
+    "name": "Specifications Table",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Section Spacing"
+      },
+      {
+        "type": "range",
+        "id": "top",
+        "label": "Top Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 40,
+        "unit": "px",
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "bottom",
+        "label": "Bottom Spacing",
+        "min": 0,
+        "max": 100,
+        "default": 40,
+        "unit": "px",
+        "step": 1
+      }
+    ],
+    "presets": [
+      {
+        "name": "Specifications Table"
+      }
+    ]
+  }
+{% endschema %}

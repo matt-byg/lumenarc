@@ -1,0 +1,481 @@
+{% comment %}
+** Cart page - main content area **
+- Template section
+{% endcomment %}
+
+{%- capture taxes_shipping_checkout -%}
+  {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+    {{ 'cart.general.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+  {%- elsif cart.taxes_included -%}
+    {{ 'cart.general.taxes_included_but_shipping_at_checkout' | t }}
+  {%- elsif shop.shipping_policy.body != blank -%}
+    {{ 'cart.general.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+  {%- else -%}
+    {{ 'cart.general.tax_and_shipping' | t }}
+  {%- endif -%}
+{%- endcapture -%}
+
+{% liquid
+  if section.settings.continue_shopping_link == blank
+    if cart.items.first.product.collections != blank
+      assign continue_shopping_link = cart.items.first.product.collections.last.url
+    else
+      assign continue_shopping_link = routes.all_products_collection_url
+    endif
+  else
+    assign continue_shopping_link = section.settings.continue_shopping_link
+  endif
+%}
+
+<section class="section">
+  <div class="container">
+    <div class="one-whole column">
+      <h1 class="h3 center main-cart-heading">{{ 'Add to Your Quote Request' }}</h1>
+    </div>
+  </div>
+
+  {% if cart.item_count == 0 %}
+    <div class="container">
+      <div class="one-whole column">
+        <p class="quote">{{ 'cart.general.continue_browsing_html' | t: link: continue_shopping_link }}</p>
+      </div>
+    </div>
+  {% else %}
+    
+      {%
+        form 'contact',
+        class: 'is-flex is-flex-wrap'
+      %}
+
+      {% if form.posted_successfully? %}
+        <p class="quote">
+          {{ 'contact.form.post_success' | t }}
+        </p>
+      {% endif %}
+
+      {% if form.errors %}
+        <p class="quote">
+          {{ 'general.forms.post_error' | t }}
+        </p>
+
+        {% assign message = 'contact.form.message' | t %}
+
+        <ul class="center">
+          {% for field in form.errors %}
+            {% if field == 'form' %}
+              <li>{{ form.errors.messages[field] }}</li>
+            {% else %}
+              <li>
+                {% assign field_name = field | replace: 'body', message %}
+                {{ 'general.forms.post_field_error_html' | t: field: field_name, error: form.errors.messages[field] }}
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+
+      <div class="container" style="
+    width: 100%;
+">
+        
+          <div
+            class="
+              one-half
+              column
+              medium-down--one-whole
+              title_column
+            "
+          >
+          {% assign totalQty = 0 %}
+          {% for item in cart.items %}
+            <div class="cart--info-wrapper">
+              {% assign totalQty = totalQty | plus: item.quantity %}
+              <a
+                class="cart_image"
+                href="{{ item.url }}"
+                title="{{ item.title | escape }}"
+              >
+                {% if item.image %}
+                  {%
+                    render 'image-element',
+                    image: item.image,
+                    alt: item.title,
+                  %}
+                {% endif %}
+              </a>
+
+
+            <div class="cart--content-wrapper">  
+              <textarea name="contact[{{ item.product.title }}]" rows="10" style="display:none;">
+               Title : {{ item.product.title }}
+               Url : https://americanlightingdesigns.com.au{{ item.url }}
+              </textarea>  
+              <input type="hidden" id="listFormName_{{ totalQty }}" name="contact[Product-{{ totalQty }}]" value="{{ item.product.title }}">  
+    
+                <p class="cart_product_title">
+                  <a href="{{ item.url }}">{{ item.product.title }}</a>
+    
+                    <a
+                      class="remove"
+                      href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0"
+                      title="{{ 'cart.general.remove' | t }}"
+                    >
+                      <span class="ss-icon icon-close"></span>
+                    </a>
+                </p>
+    
+                {%- if item.product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+                  <p class="cart_product_status">{{ item.variant.inventory_quantity }} In stock</p>
+                {%- else -%}
+                  <p class="cart_product_status">By Special Order</p>
+                {% endif %} 
+
+              <div class="contact__form-location">
+                {% comment %}<label for="contactFormLocation_{{ totalQty }}">
+                 Location <span class="red">*</span>
+                </label>{% endcomment %}
+        
+                <input
+                  id="contactFormLocation_{{ totalQty }}"
+                  type="text"
+                  name="contact[Product-{{ totalQty }}-Location]"
+                  placeholder="Location"
+             
+                >
+              </div> 
+
+                <div
+                    class="
+                      column
+                      medium-down--one-half
+                      cart__itemQuantity
+                    "
+                    id="quantity_{{ forloop.index }}"
+                  >
+                    <span class="quantity_label medium-down--hide">{{ 'cart.general.quantity' | t }}:</span>
+        
+                    <div class="purchase-details__quantity">
+                      <label class="visuallyhidden" for="quantity">{{ 'products.product.quantity' | t }}</label>
+                      <span class="product-minus js-change-quantity" data-func="minus"><span class="icon-minus"></span></span>
+                      <input
+                        class="quantity"
+                        id="Product_{{ item.id }}"
+                        type="number"
+                        min="0"
+                        size="2"
+                        name="contact[Product-{{ totalQty }}-Quantity]"
+                        value="{{ item.quantity }}"
+                        data-line-id="{{ forloop.index }}"
+                        {% if settings.limit_quantity and item.variant.inventory_management != blank and item.variant.inventory_quantity > 0 and item.variant.inventory_policy == "deny" %}
+                          max="{{ item.variant.inventory_quantity }}"
+                        {% endif %}
+                      >
+                      <span class="product-plus js-change-quantity" data-func="plus"><span class="icon-plus"></span></span>
+                    </div>
+                  </div>
+    
+                {% assign show_meta = false %}
+    
+                {% if item.selling_plan_allocation.selling_plan %}
+                  {% assign show_meta = true %}
+                {% endif %}
+    
+                {% unless item.product.has_only_default_variant or item.variant.title contains "Title" %}
+                  {% assign show_meta = true %}
+                {% endunless %}
+    
+                {% if show_meta %}
+                  <p class="meta">
+                    {% for option in item.product.options %}
+                      {% unless option contains "Title" %}
+                        <span class="label">{{ option }}:</span> <span>{{ item.variant.options[forloop.index0] }}</span><br />
+                      {% endunless %}
+                    {% endfor %}
+    
+                    <span class="selling-plan">{{ item.selling_plan_allocation.selling_plan.name }}</span>
+    
+               
+                  </p>
+                {% endif %}
+    
+                {% if item.properties.size > 0 %}
+                  <p>
+                  {% for p in item.properties %}
+                    {% unless p.last == blank %}
+                      {% if p.last contains '/uploads/' %}
+                        {{ p.first }}: <a class="lightbox" href="{{ p.last }}">{{ 'cart.general.uploaded_file' | t }}</a><br />
+                      {% else %}
+                        {{ p.first }}: {{ p.last }}<br />
+                      {% endif %}
+                    {% endunless %}
+                  {% endfor %}
+                  </p>
+                {% endif %}
+    
+                <p class="price_total">
+                  {% if item.line_level_discount_allocations.size > 0 %}
+                   <span class="money">
+                      {%
+                        render 'price-element',
+                        price: item.final_price
+                      %}
+                    </span>
+                  {% endif %}
+    
+                  <span class="money {% if item.line_level_discount_allocations.size > 0 %}was-price{% endif %}">
+                    {% if item.product.price > 0 %}
+                      {%
+                        render 'price-element',
+                        price: item.original_price
+                      %}
+                    {% else %}
+                       Price with Quote
+                    {% endif %}
+                  </span>
+                </p>
+    
+    
+                {%
+                  render 'unit-price',
+                  item: item,
+                  class: 'cart__item-unit-price'
+                %}
+    
+          
+                
+                {% if item.line_level_discount_allocations.size > 0 %}
+                  {% for discount_allocation in item.line_level_discount_allocations %}
+                    <span><strong>{{ 'cart.general.discount' | t }}:</strong> {{ discount_allocation.discount_application.title }} (- <span class="money">{{ discount_allocation.amount | money }}</span>)</span>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>  
+
+         {% endfor %}
+
+          </div>
+
+
+
+
+
+      <div class="one-half
+              column
+              medium-down--one-whole
+              title_column
+            ">
+
+
+        
+      <div class="contact__form-name">
+        {% assign name_attr = 'contact.form.name' | handle %}
+
+        <label for="contactFormName">
+          {{ 'contact.form.name' | t }} <span class="red">*</span>
+        </label>
+
+        <input
+          id="contactFormName"
+          type="text"
+          name="contact[{{ name_attr }}]"
+          placeholder="{{ 'contact.form.name' | t }}"
+          autocapitalize="words"
+          value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.name }}{% endif %}"
+          required="required"
+        >
+      </div>
+
+
+      <div class="contact__form-email">
+        <label for="contactFormPhone">
+         Phone Number
+        </label>
+
+        <input
+          id="contactFormPhone"
+          type="text"
+          name="contact[phone]"
+          placeholder="Phone Number"
+     
+        >
+      </div>
+
+      <div class="contact__form-email">
+        <label for="contactFormEmail">
+          {{ 'contact.form.email' | t }} <span class="red">*</span>
+        </label>
+
+        <input
+          id="contactFormEmail"
+          type="email"
+          name="contact[email]"
+          placeholder="{{ 'contact.form.email' | t }}"
+          autocapitalize="off"
+          autocorrect="off"
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          required="required"
+        >
+      </div> 
+
+      <div class="contact__form-email">
+        <label for="contactFormPostcode">
+         Postcode <span class="red">*</span>
+        </label>
+
+        <input
+          id="contactFormPostcode"
+          type="text"
+          name="contact[Postcode]"
+          placeholder="Postcode"
+          required="required"
+     
+        >
+      </div>  
+
+      <div class="contact__form-email">
+        <label for="contactFormReferring">
+         Referring store/distributor: <span class="red">*</span>
+        </label>
+
+        <input
+          id="contactFormReferring"
+          type="text"
+          name="contact[Referring]"
+          placeholder="Referring store/distributor"
+          required="required"
+     
+        >
+      </div>
+
+     {% comment %}<div class="contact__form-email">
+        <label for="contactFormQuantity">
+         Quantity <span class="red">*</span>
+        </label>
+        <input min="1" type="number" id="contactFormQuantity" name="contact[Quantity]" value="1"/>
+      </div>{% endcomment %}    
+        
+
+      <div class="contact__form-message">
+        <label for="contactFormMessage">
+          {{ 'contact.form.message' | t }} <span class="red">*</span>
+        </label>
+
+        <textarea
+          id="contactFormMessage"
+          rows="5"
+          name="contact[body]"
+          placeholder="{{ 'contact.form.message' | t }}"
+          required="required"
+        ></textarea>
+
+        <input
+          class="
+            submit
+            action_button
+          "
+          type="submit"
+          value="{{ 'contact.form.send' | t }}"
+        />
+      </div>
+
+    
+
+
+      </div>
+
+
+
+
+      </div>
+
+ 
+
+      <div class="container">
+        {% if section.settings.display_special_instructions %}
+          <div
+            class="
+              five-eighths
+              columns
+              medium-down--one-whole
+            "
+          >
+            <label for="note">{{ 'cart.general.note' | t: shop_name: shop.name }}:</label>
+            <textarea
+              id="note"
+              name="note"
+              rows="2"
+            >
+              {{- cart.note -}}
+            </textarea>
+          </div>
+        {% endif %}
+
+        <div
+          class="
+            one-fourth
+            column
+            medium-down--one-whole
+            {% if section.settings.display_special_instructions %}
+              offset-by-two
+            {% else %}
+              offset-by-twelve
+            {% endif %}
+            is-hidden-offset-mobile-only
+          "
+        >
+          <p>
+    
+    
+            {% if settings.display_tos_checkbox %}
+              <div class="tos_checkbox">
+                <input
+                  class="tos_agree"
+                  id="cart_agree"
+                  type="checkbox"
+                  required
+                >
+                  <label class="tos_label" for="cart_agree">
+                    {% if settings.tos_richtext != blank %}
+                      {{ settings.tos_richtext | strip_newlines }}
+                    {% else %}
+                      {{ 'cart.general.agree_to_terms_html' | t }}
+                    {% endif %}
+                  </label>
+              </div>
+            {% endif %}
+          </p>
+
+
+
+
+
+        </div>
+      </div>
+        {% endform %}
+  {% endif %}
+</section>
+
+{% schema %}
+  {
+    "name": "Cart page",
+    "class": "shopify-section--cart-template",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "display_special_instructions",
+        "label": "Show \"note\" text box",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Continue shopping button"
+      },
+      {
+        "type": "url",
+        "id": "continue_shopping_link",
+        "label": "Link"
+      }
+    ]
+  }
+{% endschema %}
