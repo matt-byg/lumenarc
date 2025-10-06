@@ -7472,15 +7472,52 @@ $(function () {
   if (window.PXUTheme.theme_settings.newsletter_popup) {
     newsletter_popup.init();
   } // Cart page functions - check subtotal and input updates
+$('.update_subtotal').click(function () {
+  $("#cart_form").submit();
+  return false;
+});
 
+// Persist cart quantity edits and update header counts via fetch API
+document.addEventListener('change', function (e) {
+  var el = e.target;
+  // Only act on cart quantity inputs
+  if (!el.matches('input.quantity[data-line-id], input[data-line-id].quantity')) return;
 
-  $('.update_subtotal').click(function () {
-    $("#cart_form").submit();
-    return false;
+  var qty = parseInt(el.value, 10);
+  if (isNaN(qty) || qty < 0) qty = 0;
+
+  var line = parseInt(el.getAttribute('data-line-id'), 10);
+  if (!line || line < 1) return;
+
+  el.disabled = true;
+  el.classList.add('is-updating');
+
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ line: Number(line), quantity: Number(qty) })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(cart){
+    // Update all cart count elements
+    document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class^="ai-top-header-bar-cart-count-"]').forEach(function(node){
+      node.textContent = cart.item_count;
+    });
+
+    // Reload cart page to sync template, otherwise just re-enable input
+    if (window.location.pathname.indexOf('/cart') !== -1) {
+      window.location.reload();
+    } else {
+      el.disabled = false;
+      el.classList.remove('is-updating');
+    }
+  })
+  .catch(function(err){
+    console.error('Cart change failed', err);
+    el.disabled = false;
+    el.classList.remove('is-updating');
   });
-  $("#cart_form input[type='number']").change(function () {
-    $("#cart_form").submit();
-  }); //Terms and conditions agreement check
+}, false); //Terms and conditions agreement check
 
   addToCartTermsCheck();
   Shopify.queryParams = {};
@@ -7604,6 +7641,9 @@ $(function () {
     if ($top.length) {
       $top.text(cart.item_count);
     }
+
+    // Update AI generated header cart count
+    $('[class^="ai-top-header-bar-cart-count-"]').text(cart.item_count);
   } //Terms and conditions agreement check
 
 
