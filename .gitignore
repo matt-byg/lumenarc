@@ -1,0 +1,75 @@
+override.tf
+override.tf.json
+ehthumbs.db
+# === Shopify theme-focused .gitignore ===
+
+# macOS
+.DS_Store
+Thumbs.db
+Icon?
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.sublime-*
+*.code-workspace
+
+# Node
+node_modules/
+.npm
+.pnpm-debug.log
+yarn-error.log
+
+# Environment / secrets
+.env
+.env.*.local
+.env.local
+.env.test
+
+# Build / cache / logs
+dist/
+build/
+public/
+.tmp/
+.cache/
+.sass-cache/
+logs/
+*.log
+
+# Theme/tooling caches and CLI files
+.cache_liquid
+.shopify
+.shopify-cli.yml
+
+# Docker / infra (if present)
+docker-compose.override.yml
+.env.docker
+.terraform/
+
+# Misc
+*.orig
+*.zip
+*.tar.gz
+
+# Optional: ignore store-specific settings if you don't want them in the repo
+# Uncomment to ignore the store settings file (contains theme customizations)
+# config/settings_data.json
+
+# Keep lockfiles in source control for reproducible installs (recommended)
+# package-lock.json
+# yarn.lock
+
+# Ensure Shopify theme source is not ignored (explicit allow rules)
+# These prevent accidental ignores if a broader pattern is later added.
+!layout/
+!templates/
+!sections/
+!snippets/
+!assets/
+!config/
+!locales/
+!theme.liquid
+!config/settings_schema.json
+!config/settings_data.json
+
+# End
