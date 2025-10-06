@@ -7325,26 +7325,7 @@ $(function () {
   }
 
   // Persist cart quantity edits and update header counts via fetch API
-  // Use DOMContentLoaded to ensure DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      setupCartQuantityHandlers();
-    });
-  } else {
-    setupCartQuantityHandlers();
-  }
-
-  function setupCartQuantityHandlers() {
-    console.log('Setting up cart quantity handlers');
-    
-    // jQuery-based approach as fallback
-    $(document).on('change', 'input.quantity[data-line-id], input[data-line-id].quantity', function(e) {
-      console.log('jQuery change event triggered on:', this.tagName, this.className, this.getAttribute('data-line-id'));
-      handleCartQuantityChange(this);
-    });
-    
-    // Native JavaScript approach
-    document.addEventListener('change', function (e) {
+  document.addEventListener('change', function (e) {
     var el = e.target;
     console.log('Change event triggered on:', el.tagName, el.className, el.getAttribute('data-line-id')); // Debug log
     
@@ -7353,14 +7334,7 @@ $(function () {
       console.log('Not a cart quantity input, skipping'); // Debug log
       return;
     }
-    
-    handleCartQuantityChange(el);
-  });
-  }
 
-  function handleCartQuantityChange(el) {
-    console.log('handleCartQuantityChange called with element:', el);
-    
     var qty = parseInt(el.value, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
 
@@ -7428,7 +7402,6 @@ $(function () {
       el.classList.remove('is-updating');
     });
   });
-  }
 
   Shopify.queryParams = {};
 
