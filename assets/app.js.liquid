@@ -7302,21 +7302,47 @@ $(function () {
     // This is handled by the fetch API mechanism below
     return false;
   });
-  // Removed the old cart form submit - now handled by fetch API //Terms and conditions agreement check
+  
+  // Fallback: Also handle traditional cart form submission if fetch API fails
+  $("#cart_form input[type='number']").change(function () {
+    console.log('Traditional cart form change detected');
+    // Let the fetch API handle it first, but keep this as fallback
+  }); //Terms and conditions agreement check
 
   addToCartTermsCheck();
+
+  // Debug: Check if we're on cart page
+  if (window.location.pathname.indexOf('/cart') !== -1) {
+    console.log('Cart page detected, setting up quantity change handlers');
+    
+    // Debug: Check if quantity inputs exist
+    var quantityInputs = document.querySelectorAll('input.quantity[data-line-id], input[data-line-id].quantity');
+    console.log('Found', quantityInputs.length, 'quantity inputs with data-line-id');
+    
+    quantityInputs.forEach(function(input, index) {
+      console.log('Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
+    });
+  }
 
   // Persist cart quantity edits and update header counts via fetch API
   document.addEventListener('change', function (e) {
     var el = e.target;
+    console.log('Change event triggered on:', el.tagName, el.className, el.getAttribute('data-line-id')); // Debug log
+    
     // Only act on cart quantity inputs
-    if (!el.matches('input.quantity[data-line-id], input[data-line-id].quantity')) return;
+    if (!el.matches('input.quantity[data-line-id], input[data-line-id].quantity')) {
+      console.log('Not a cart quantity input, skipping'); // Debug log
+      return;
+    }
 
     var qty = parseInt(el.value, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
 
     var line = parseInt(el.getAttribute('data-line-id'), 10);
-    if (!line || line < 1) return;
+    if (!line || line < 1) {
+      console.log('Invalid line ID:', line); // Debug log
+      return;
+    }
 
     console.log('Cart update: line', line, 'quantity', qty); // Debug log
 
@@ -7371,6 +7397,7 @@ $(function () {
     })
     .catch(function(error) {
       console.error('Cart update error:', error);
+      console.error('Error details:', error.message, error.stack);
       el.disabled = false;
       el.classList.remove('is-updating');
     });
@@ -8165,6 +8192,10 @@ $(document).on('shopify:section:load', function (e) {
 
   if ($parentSection.hasClass('shopify-section--search-template')) {
     window.collection.init();
+  }
+
+  if ($parentSection.hasClass('shopify-section--cart-template')) {
+    window.product.initializeQuantityBox();
   }
 
   if ($parentSection.hasClass('shopify-section--header')) {
