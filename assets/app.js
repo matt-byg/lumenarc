@@ -5352,14 +5352,36 @@ window.product = {
     }
 
     const $defaultSelector = $('.js-product_section [data-product-form]:not(.product-recommendations .js-product_section [data-product-form])');
-    $defaultSelector.each((_, options) => {
-      const $options = $(options);
+
+    // Load cart once and use it to initialise product quantity inputs so
+    // returning to a product page preserves quantities already in the cart.
+    $.getJSON('/cart.js', function(cart) {
+      $defaultSelector.each((_, options) => {
+        const $options = $(options);
       const productTitle = $options.data('product-title');
       const productDetailsEl = options.closest('[data-product-details]');
       const surfacePickUpEl = productDetailsEl.querySelector('[data-surface-pick-up]');
       const paymentTerms = new _helpers_PaymentTerms__WEBPACK_IMPORTED_MODULE_10__/* .default */ .Z(productDetailsEl);
       let currentVariantId = $options.data('variant-id');
       let currentVariantTitle = $options.data('variant-title');
+
+      // If this variant already exists in the cart, set the product form
+      // quantity input to match the cart quantity so the state is preserved
+      // across navigation.
+      if (cart && cart.items && cart.items.length) {
+        for (let i = 0; i < cart.items.length; i++) {
+          const cartItem = cart.items[i];
+          // compare variant ids (cart uses variant_id)
+          if (cartItem.variant_id == currentVariantId) {
+            // Find quantity input inside this product form and set its value
+            const $qtyInput = $options.find('input.quantity[name="quantity"]');
+            if ($qtyInput.length) {
+              $qtyInput.val(cartItem.quantity).trigger('change');
+            }
+            break;
+          }
+        }
+      }
       let surfacePickUp;
 
       if (surfacePickUpEl) {
@@ -5436,8 +5458,9 @@ window.product = {
           enableHistoryState: $options.data('enable-state')
         });
       }
-    });
-    $('.product_form').addClass('is-visible');
+  });
+  });
+  $('.product_form').addClass('is-visible');
 
     if (window.PXUTheme.theme_settings.product_form_style == "swatches") {
       $('.swatch :radio').change(function () {
@@ -6059,6 +6082,71 @@ window.product = {
 
       $input.trigger('change');
     });
+
+    // When a quantity input changes, sync it to the cart via AJAX so the
+    // cart state is updated immediately and preserved across navigation.
+    $('body').on('change', 'input.quantity', function () {
+      var $input = $(this);
+      var val = parseInt($input.val()) || 0;
+
+      // If this input has a data-line-id (cart page), update that line
+      var lineId = $input.data('line-id');
+
+      if (lineId) {
+        $.ajax({
+          type: 'POST',
+          url: '/cart/change.js',
+          dataType: 'json',
+          data: {
+            line: lineId,
+            quantity: val
+          },
+          success: function (cart) {
+            refreshCart(cart);
+          }
+        });
+        return;
+      }
+
+      // Otherwise, this is likely a product form input. If the variant
+      // already exists in the cart, find its line and update it.
+      var $form = $input.closest('[data-product-form]');
+
+      if ($form.length) {
+        var variantId = $form.data('variant-id');
+
+        if (!variantId) return;
+
+        // Find matching cart item then update its quantity
+        $.getJSON('/cart.js', function (cart) {
+          if (!cart || !cart.items) return;
+
+          var foundLine = null;
+
+          for (var i = 0; i < cart.items.length; i++) {
+            if (cart.items[i].variant_id == variantId) {
+              foundLine = i + 1; // Shopify lines are 1-indexed
+              break;
+            }
+          }
+
+          if (foundLine !== null) {
+            $.ajax({
+              type: 'POST',
+              url: '/cart/change.js',
+              dataType: 'json',
+              data: {
+                line: foundLine,
+                quantity: val
+              },
+              success: function (cart) {
+                refreshCart(cart);
+              }
+            });
+          }
+        });
+      }
+    });
   },
   loadProductRecommendations: function () {
     /* NE compatibility
@@ -6108,6 +6196,7 @@ window.product = {
       $el.flickity('resize');
     });
     $('body').off('click', '.js-change-quantity');
+    $('body').off('change', 'input.quantity');
   }
 };
 /*============================================================================
