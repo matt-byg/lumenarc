@@ -20,7 +20,7 @@
             "store_name_size": 20,
             "store_name_weight": "600",
             "show_cart_text": true,
-            "cart_text": "Cart",
+            "cart_text": "Quote Request",
             "show_cart_count": true,
             "cart_icon_size": 20,
             "cart_text_size": 14,
