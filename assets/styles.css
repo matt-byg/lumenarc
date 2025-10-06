@@ -13199,11 +13199,11 @@ body:not(.user-is-tabbing) input.search-form__input {
 }
 .shopify-section--cart-template .cart--info-wrapper {
   display: flex;
-  padding-bottom: 20px;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #c2c1cc;
 }
 .shopify-section--cart-template .cart--info-wrapper{
-  margin-bottom:20px;
+  margin-bottom: 1rem;
 }
 .shopify-section--cart-template .cart--content-wrapper .cart_product_title{
   display: flex;
