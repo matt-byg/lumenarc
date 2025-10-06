@@ -7314,12 +7314,17 @@ $(function () {
     alert('Cart page JavaScript is working!'); // Basic test
     
     // Debug: Check if quantity inputs exist
-    var quantityInputs = document.querySelectorAll('input.quantity[data-line-id], input[data-line-id].quantity');
+    var quantityInputs = document.querySelectorAll('input.quantity[data-line-id]');
     console.log('Found', quantityInputs.length, 'quantity inputs with data-line-id');
     
     quantityInputs.forEach(function(input, index) {
       console.log('Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
     });
+    
+    // Test the selector
+    console.log('Testing selector input.quantity[data-line-id]:', document.querySelectorAll('input.quantity[data-line-id]').length);
+    console.log('All quantity inputs:', document.querySelectorAll('input.quantity').length);
+    console.log('All inputs with data-line-id:', document.querySelectorAll('input[data-line-id]').length);
     
     // Test if event listener is working
     console.log('🎯 Event listeners attached - try changing a quantity to see debug output');
@@ -7377,9 +7382,27 @@ $(function () {
     }
   });
 
-  // Also handle individual quantity changes for immediate updates
+  // Handle both direct input changes and button clicks
   document.addEventListener('change', function (e) {
-    var el = e.target;
+    handleQuantityChange(e.target);
+  });
+  
+  // Also handle plus/minus button clicks
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.js-change-quantity')) {
+      console.log('🔄 Plus/minus button clicked');
+      // Wait a moment for the value to update, then handle the change
+      setTimeout(function() {
+        var input = e.target.closest('.purchase-details__quantity, .cart--info-wrapper').querySelector('input.quantity[data-line-id]');
+        if (input) {
+          console.log('🔄 Handling button click change for input:', input);
+          handleQuantityChange(input);
+        }
+      }, 100);
+    }
+  });
+
+  function handleQuantityChange(el) {
     console.log('=== CHANGE EVENT DEBUG ===');
     console.log('Element:', el);
     console.log('Tag:', el.tagName);
@@ -7390,7 +7413,7 @@ $(function () {
     console.log('========================');
     
     // Only act on cart quantity inputs
-    if (!el.matches('input.quantity[data-line-id], input[data-line-id].quantity')) {
+    if (!el.matches('input.quantity[data-line-id]')) {
       console.log('Not a cart quantity input, skipping');
       return;
     }
