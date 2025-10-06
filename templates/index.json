@@ -10,6 +10,36 @@
 {
   "wrapper": "div.index-sections",
   "sections": {
+    "1759778761ab6ac403": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_67a11bf_mbfUzE": {
+          "type": "ai_gen_block_67a11bf",
+          "settings": {
+            "store_name": "",
+            "store_name_size": 20,
+            "store_name_weight": "600",
+            "show_cart_text": true,
+            "cart_text": "Cart",
+            "show_cart_count": true,
+            "cart_icon_size": 20,
+            "cart_text_size": 14,
+            "background_color": "#6a6671",
+            "text_color": "#ffffff",
+            "text_hover_color": "#d29800",
+            "border_color": "#c2c1cc",
+            "cart_count_bg_color": "#ab7d07",
+            "cart_count_text_color": "#ffffff",
+            "padding": 12
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_67a11bf_mbfUzE"
+      ],
+      "settings": {}
+    },
     "slideshow": {
       "type": "slideshow",
       "blocks": {
@@ -707,6 +737,7 @@
     }
   },
   "order": [
+    "1759778761ab6ac403",
     "slideshow",
     "featured-text",
     "collection_list_Ea9X76",
