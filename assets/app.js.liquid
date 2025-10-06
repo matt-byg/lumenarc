@@ -7331,16 +7331,40 @@ $(function () {
     .then(function(res){ return res.json(); })
     .then(function(cart){
       // Update all cart count elements
-      document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class^="ai-top-header-bar-cart-count-"]').forEach(function(node){
+      document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
         node.textContent = cart.item_count;
       });
 
-      // Reload cart page to sync template, otherwise just re-enable input
-      if (window.location.pathname.indexOf('/cart') !== -1) {
-        window.location.reload();
-      } else {
-        el.disabled = false;
-        el.classList.remove('is-updating');
+      // Also try more specific selectors for AI header
+      document.querySelectorAll('[class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+        node.textContent = cart.item_count;
+      });
+
+      // Call the refreshCart function as well to ensure consistency
+      if (typeof refreshCart === 'function') {
+        refreshCart(cart);
+      }
+
+      // Don't reload cart page, just re-enable input and update display
+      el.disabled = false;
+      el.classList.remove('is-updating');
+      
+      // Update the cart item display on the page
+      var $cartItem = el.closest('.cart--info-wrapper');
+      if ($cartItem.length) {
+        // Update any price displays or other cart item info if needed
+        var $priceDisplay = $cartItem.find('.price_total .money');
+        if ($priceDisplay.length && cart.items) {
+          // Find the matching cart item and update price if needed
+          var lineId = parseInt(el.getAttribute('data-line-id'), 10);
+          var matchingItem = cart.items.find(function(item, index) {
+            return (index + 1) === lineId;
+          });
+          if (matchingItem) {
+            // Update price display if needed
+            // This is optional - the main cart count update is what we need
+          }
+        }
       }
     })
     .catch(function(error) {
