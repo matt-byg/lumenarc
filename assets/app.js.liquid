@@ -6050,9 +6050,9 @@ window.product = {
       } else {
         if (val > valMin) $input.val(val - 1);
 
-        if ($this.parents(".cart_item").length) {
+        if ($this.parents(".cart--info-wrapper").length) {
           if (val - 1 == 0) {
-            $this.closest('.cart_item').addClass('animated fadeOutUp');
+            $this.closest('.cart--info-wrapper').addClass('animated fadeOutUp');
           }
         }
       }
