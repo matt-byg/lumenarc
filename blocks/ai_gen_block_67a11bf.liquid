@@ -66,6 +66,13 @@
     margin-left: 4px;
   }
 
+  .ai-top-header-bar-continue-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    margin-left: 12px;
+    font-size: {{ block.settings.cart_text_size }}px;
+  }
+
   @media screen and (max-width: 768px) {
     .ai-top-header-bar-container-{{ ai_gen_id }} {
       padding: 0 15px;
@@ -100,9 +107,12 @@
       {% if block.settings.show_cart_text %}
         <span class="ai-top-header-bar-cart-text-{{ ai_gen_id }}">{{ block.settings.cart_text }}</span>
       {% endif %}
-      {% if block.settings.show_cart_count %}
-        <span class="ai-top-header-bar-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
-      {% endif %}
+      <span class="ai-top-header-bar-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
+    </a>
+    
+    {%- comment -%} Always show a Continue Shopping link next to the cart so users can return to shopping from any page {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="ai-top-header-bar-continue-{{ ai_gen_id }}">
+      {{ 'layout.general.continue_shopping' | t }}
     </a>
   </div>
 </div>
