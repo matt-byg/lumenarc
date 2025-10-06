@@ -7303,11 +7303,7 @@ $(function () {
     return false;
   });
   
-  // Fallback: Also handle traditional cart form submission if fetch API fails
-  $("#cart_form input[type='number']").change(function () {
-    console.log('Traditional cart form change detected');
-    // Let the fetch API handle it first, but keep this as fallback
-  }); //Terms and conditions agreement check
+  //Terms and conditions agreement check
 
   addToCartTermsCheck();
 

@@ -167,7 +167,7 @@
                     <span class="quantity_label medium-down--hide">{{ 'cart.general.quantity' | t }}:</span>
         
                     <div class="purchase-details__quantity">
-                      <label class="visuallyhidden" for="quantity">{{ 'products.product.quantity' | t }}</label>
+                      <label class="visuallyhidden" for="Product_{{ item.id }}">{{ 'products.product.quantity' | t }}</label>
                       <span class="product-minus js-change-quantity" data-func="minus"><span class="icon-minus"></span></span>
                       <input
                         class="quantity"
@@ -440,13 +440,13 @@
     
             {% if settings.display_tos_checkbox %}
               <div class="tos_checkbox">
-                <input
-                  class="tos_agree"
-                  id="cart_agree"
-                  type="checkbox"
-                  required
-                >
-                  <label class="tos_label" for="cart_agree">
+                <label class="tos_label" for="cart_agree">
+                  <input
+                    class="tos_agree"
+                    id="cart_agree"
+                    type="checkbox"
+                    required
+                  >
                     {% if settings.tos_richtext != blank %}
                       {{ settings.tos_richtext | strip_newlines }}
                     {% else %}
