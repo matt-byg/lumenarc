@@ -1,6 +1,261 @@
+{% doc %}
+  @prompt
+    Very simple top header bar that has the store name on the left and the cart on the right
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-top-header-bar-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding }}px 0;
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-top-header-bar-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ai-top-header-bar-store-name-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.store_name_size }}px;
+    font-weight: {{ block.settings.store_name_weight }};
+    text-decoration: none;
+    margin: 0;
+  }
+
+  .ai-top-header-bar-store-name-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.text_hover_color }};
+  }
+
+  .ai-top-header-bar-cart-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.cart_text_size }}px;
+    transition: color 0.3s ease;
+  }
+
+  .ai-top-header-bar-cart-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.text_hover_color }};
+  }
+
+  .ai-top-header-bar-cart-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.cart_icon_size }}px;
+    height: {{ block.settings.cart_icon_size }}px;
+    stroke: currentColor;
+  }
+
+  .ai-top-header-bar-cart-count-{{ ai_gen_id }} {
+    background-color: {{ block.settings.cart_count_bg_color }};
+    color: {{ block.settings.cart_count_text_color }};
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-top-header-bar-container-{{ ai_gen_id }} {
+      padding: 0 15px;
+    }
+
+    .ai-top-header-bar-store-name-{{ ai_gen_id }} {
+      font-size: {{ block.settings.store_name_size | times: 0.9 }}px;
+    }
+
+    .ai-top-header-bar-cart-text-{{ ai_gen_id }} {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-top-header-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-top-header-bar-container-{{ ai_gen_id }}">
+    <a href="/" class="ai-top-header-bar-store-name-{{ ai_gen_id }}">
+      {% if block.settings.store_name != blank %}
+        {{ block.settings.store_name }}
+      {% else %}
+        {{ shop.name }}
+      {% endif %}
+    </a>
+
+    <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
+      <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      {% if block.settings.show_cart_text %}
+        <span class="ai-top-header-bar-cart-text-{{ ai_gen_id }}">{{ block.settings.cart_text }}</span>
+      {% endif %}
+      {% if block.settings.show_cart_count %}
+        <span class="ai-top-header-bar-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
+      {% endif %}
+    </a>
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Top header bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Store name"
+    },
+    {
+      "type": "text",
+      "id": "store_name",
+      "label": "Store name",
+      "info": "Leave blank to use your shop name"
+    },
+    {
+      "type": "range",
+      "id": "store_name_size",
+      "label": "Store name size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "store_name_weight",
+      "label": "Store name weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_text",
+      "label": "Show cart text",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cart_text",
+      "label": "Cart text",
+      "default": "Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_count",
+      "label": "Show cart count",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "cart_icon_size",
+      "label": "Cart icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "cart_text_size",
+      "label": "Cart text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#6a6671"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text hover color",
+      "default": "#d29800"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#c2c1cc"
+    },
+    {
+      "type": "color",
+      "id": "cart_count_bg_color",
+      "label": "Cart count background",
+      "default": "#ab7d07"
+    },
+    {
+      "type": "color",
+      "id": "cart_count_text_color",
+      "label": "Cart count text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top header bar"
+    }
+  ]
+}
 {% endschema %}
