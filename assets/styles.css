@@ -84,6 +84,12 @@
 .surface-pick-up-item {
   --surface-pick-up-item-theme-success-color: rgb(50, 205, 50);
   --surface-pick-up-item-theme-error-color: rgb(179, 58, 58);
+
+/* Simple floating quote cart badge */
+#quote-cart-display a { color: inherit; }
+@media (max-width: 640px) {
+  #quote-cart-display { right: 8px; left: 8px; bottom: 8px; padding: 10px; font-size: 14px; }
+}
   --surface-pick-up-item-theme-paragraph-font-size: 16px;
   --surface-pick-up-item-theme-paragraph-smaller-font-size: calc(var(--surface-pick-up-item-theme-paragraph-font-size) - 4px);
   --surface-pick-up-item-theme-body-font-weight-bold: 600;

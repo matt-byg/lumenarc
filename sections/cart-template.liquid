@@ -139,9 +139,11 @@
                 <input
                   id="contactFormLocation_{{ totalQty }}"
                   type="text"
-                  name="contact[Product-{{ totalQty }}-Location]"
+                  class="cart-location-input"
+                  data-line-id="{{ forloop.index }}"
+                  data-variant-id="{{ item.variant.id }}"
                   placeholder="Location"
-             
+                  value="{{ item.properties['Location'] }}"
                 >
               </div> 
 

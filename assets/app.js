@@ -176,6 +176,59 @@ function _defineProperty(obj, key, value) {
       configurable: true,
       writable: true
     });
+
+    // Persist per-line Location property by removing and re-adding the line
+    // with properties when the cart page Location input is changed.
+    $('body').on('change', '.cart-location-input', function () {
+      var $input = $(this);
+      var lineId = $input.data('line-id');
+      var variantId = $input.data('variant-id');
+      var locationValue = $input.val();
+
+      if (!lineId || !variantId) return;
+
+      // First remove the existing line
+      $.ajax({
+        type: 'POST',
+        url: '/cart/change.js',
+        dataType: 'json',
+        data: {
+          line: lineId,
+          quantity: 0
+        },
+        success: function (cart) {
+          // Then re-add the variant with the same quantity and new properties
+          // We try to use the previous quantity if possible, otherwise default to 1
+          var qtyToAdd = 1;
+          // Attempt to derive quantity from the contact form field name if present
+          var qtyInput = $input.closest('.cart--info-wrapper').find('input.quantity');
+          if (qtyInput.length) {
+            qtyToAdd = parseInt(qtyInput.val()) || 1;
+          }
+
+          var postData = {
+            id: variantId,
+            quantity: qtyToAdd
+          };
+
+          // Append properties[Location]
+          postData['properties[Location]'] = locationValue;
+
+          $.ajax({
+            type: 'POST',
+            url: '/cart/add.js',
+            dataType: 'json',
+            data: postData,
+            success: function (newItem) {
+              // Refresh cart counts
+              $.getJSON('/cart.js', function (cart) {
+                refreshCart(cart);
+              });
+            }
+          });
+        }
+      });
+    });
   } else {
     obj[key] = value;
   }
@@ -5369,16 +5422,24 @@ window.product = {
       // quantity input to match the cart quantity so the state is preserved
       // across navigation.
       if (cart && cart.items && cart.items.length) {
+        // Sum quantities for this variant in case there are multiple cart
+        // lines for the same variant (e.g., different properties like Location).
+        let totalQtyForVariant = 0;
+
         for (let i = 0; i < cart.items.length; i++) {
           const cartItem = cart.items[i];
-          // compare variant ids (cart uses variant_id)
           if (cartItem.variant_id == currentVariantId) {
-            // Find quantity input inside this product form and set its value
-            const $qtyInput = $options.find('input.quantity[name="quantity"]');
-            if ($qtyInput.length) {
-              $qtyInput.val(cartItem.quantity).trigger('change');
-            }
-            break;
+            totalQtyForVariant += cartItem.quantity;
+          }
+        }
+
+        if (totalQtyForVariant > 0) {
+          const $qtyInput = $options.find('input.quantity[name="quantity"]');
+          if ($qtyInput.length) {
+            // Set the input value but do NOT trigger change here —
+            // triggering would call the AJAX update and may overwrite
+            // cart state during initialization.
+            $qtyInput.val(totalQtyForVariant);
           }
         }
       }
@@ -6121,28 +6182,51 @@ window.product = {
         $.getJSON('/cart.js', function (cart) {
           if (!cart || !cart.items) return;
 
-          var foundLine = null;
+          var matchingLines = [];
 
           for (var i = 0; i < cart.items.length; i++) {
             if (cart.items[i].variant_id == variantId) {
-              foundLine = i + 1; // Shopify lines are 1-indexed
-              break;
+              matchingLines.push({ line: i + 1, quantity: cart.items[i].quantity });
             }
           }
 
-          if (foundLine !== null) {
+          if (matchingLines.length > 0) {
+            // Update first matching line to the desired quantity.
+            var firstLine = matchingLines[0].line;
+
             $.ajax({
               type: 'POST',
               url: '/cart/change.js',
               dataType: 'json',
               data: {
-                line: foundLine,
+                line: firstLine,
                 quantity: val
               },
               success: function (cart) {
                 refreshCart(cart);
               }
             });
+
+            // If there are additional lines (created by different properties),
+            // remove them to consolidate the variant into a single line.
+            if (matchingLines.length > 1) {
+              for (var j = 1; j < matchingLines.length; j++) {
+                (function (lineToRemove) {
+                  $.ajax({
+                    type: 'POST',
+                    url: '/cart/change.js',
+                    dataType: 'json',
+                    data: {
+                      line: lineToRemove,
+                      quantity: 0
+                    },
+                    success: function (cart) {
+                      refreshCart(cart);
+                    }
+                  });
+                })(matchingLines[j].line);
+              }
+            }
           }
         });
       }
@@ -7506,6 +7590,12 @@ $(function () {
       if ($cartCount.length) {
         $cartCount.text(cart.item_count);
       }
+    }
+
+    // Update simple floating quote cart if present
+    var $floating = $('.quote-cart-count');
+    if ($floating.length) {
+      $floating.text(cart.item_count);
     }
   } //Terms and conditions agreement check
 

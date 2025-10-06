@@ -353,6 +353,14 @@
           <input type="number" min="1" size="2" class="quantity" name="quantity" id="quantity" value="1" {% if settings.limit_quantity and variant.inventory_management != blank and variant.inventory_policy == "deny" %}max="{{ variant.inventory_quantity }}"{% endif %} />
           <span class="product-plus js-change-quantity" data-func="plus"><span class="icon-plus"></span></span>
         </div>
+        
+          {%- comment -%}
+            Location property: captured on add-to-cart so it persists with the cart line
+          {%- endcomment -%}
+          <div class="purchase-details__location">
+            <label class="visuallyhidden" for="product_location">Location</label>
+            <input type="text" id="product_location" name="properties[Location]" class="product-location" placeholder="Location (optional)" />
+          </div>
       {% endif %}
 
       {% if show_payment_button %}
