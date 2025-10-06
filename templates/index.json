@@ -24,7 +24,7 @@
             "show_cart_count": true,
             "cart_icon_size": 20,
             "cart_text_size": 14,
-            "background_color": "#4b4f54",
+            "background_color": "#eeeeee",
             "text_color": "#ffffff",
             "text_hover_color": "#d29800",
             "border_color": "#c2c1cc",
