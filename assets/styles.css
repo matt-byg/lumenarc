@@ -3553,13 +3553,14 @@ ul li {
 ================================================== */
 .top-bar {
   position: relative;
-  background-color: #6a6671;
+  background-color: #eeeeee;
   text-align: center;
   z-index: 8000;
   width: 100%;
   padding: 0.25rem;
   box-sizing: border-box;
-}.top-bar .container {
+}
+.top-bar .container {
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -3973,6 +3974,18 @@ a.slicknav_btn {
 /* Mobile menu styling */
 .header-container {
   /* Hide border-right on 2nd last child */
+}
+/* Ensure header container background is transparent so top-bar color shows through */
+.header-container { background: transparent !important; }
+
+/* Improve badge contrast on light top-bar */
+.quote-cart-count-top,
+.cart_count {
+  background: #d8a600; /* warm gold for visibility */
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 700;
 }
 @media only screen and (min-width: 1025px) and (max-width: 1400px) {
   .header-container .menu-item__disclosure {
