@@ -7418,6 +7418,19 @@ $(function () {
         $cartCount.text(cart.item_count);
       }
     }
+
+    // Update simple floating quote cart if present
+    var $floating = $('.quote-cart-count');
+    if ($floating.length) {
+      $floating.text(cart.item_count);
+    }
+    var $top = $('.quote-cart-count-top');
+    if ($top.length) {
+      $top.text(cart.item_count);
+    }
+
+    // Update AI generated header cart count
+    $('[class^="ai-top-header-bar-cart-count-"]').text(cart.item_count);
   } //Terms and conditions agreement check
 
 
