@@ -7313,7 +7313,7 @@ $(function () {
 
   // Debug: Check if we're on cart page
   if (window.location.pathname.indexOf('/cart') !== -1) {
-    console.log('Cart page detected, setting up quantity change handlers');
+    console.log('🛒 CART PAGE DETECTED - Setting up handlers');
     
     // Debug: Check if quantity inputs exist
     var quantityInputs = document.querySelectorAll('input.quantity[data-line-id], input[data-line-id].quantity');
@@ -7322,6 +7322,9 @@ $(function () {
     quantityInputs.forEach(function(input, index) {
       console.log('Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
     });
+    
+    // Test if event listener is working
+    console.log('🎯 Event listeners attached - try changing a quantity to see debug output');
   }
 
   // Handle contact form submission - update cart first, then submit contact form
@@ -7379,13 +7382,22 @@ $(function () {
   // Also handle individual quantity changes for immediate updates
   document.addEventListener('change', function (e) {
     var el = e.target;
-    console.log('Change event triggered on:', el.tagName, el.className, el.getAttribute('data-line-id')); // Debug log
+    console.log('=== CHANGE EVENT DEBUG ===');
+    console.log('Element:', el);
+    console.log('Tag:', el.tagName);
+    console.log('Classes:', el.className);
+    console.log('Data-line-id:', el.getAttribute('data-line-id'));
+    console.log('Name:', el.name);
+    console.log('Value:', el.value);
+    console.log('========================');
     
     // Only act on cart quantity inputs
     if (!el.matches('input.quantity[data-line-id], input[data-line-id].quantity')) {
-      console.log('Not a cart quantity input, skipping'); // Debug log
+      console.log('Not a cart quantity input, skipping');
       return;
     }
+    
+    console.log('✅ This is a cart quantity input - proceeding with update');
 
     var qty = parseInt(el.value, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
@@ -7396,7 +7408,10 @@ $(function () {
       return;
     }
 
-    console.log('Cart update: line', line, 'quantity', qty); // Debug log
+    console.log('🛒 CART UPDATE REQUEST:');
+    console.log('Line:', line);
+    console.log('Quantity:', qty);
+    console.log('Request body:', JSON.stringify({ line: Number(line), quantity: Number(qty) }));
 
     el.disabled = true;
     el.classList.add('is-updating');
@@ -7406,9 +7421,16 @@ $(function () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ line: Number(line), quantity: Number(qty) })
     })
-    .then(function(res){ return res.json(); })
+    .then(function(res){ 
+      console.log('📡 API Response status:', res.status);
+      console.log('📡 API Response headers:', res.headers);
+      return res.json(); 
+    })
     .then(function(cart){
-      console.log('Cart updated successfully:', cart.item_count, 'items'); // Debug log
+      console.log('✅ CART UPDATE SUCCESS:');
+      console.log('Cart object:', cart);
+      console.log('Item count:', cart.item_count);
+      console.log('Items:', cart.items);
       
       // Update all cart count elements
       document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
@@ -7448,8 +7470,11 @@ $(function () {
       }
     })
     .catch(function(error) {
-      console.error('Cart update error:', error);
-      console.error('Error details:', error.message, error.stack);
+      console.error('❌ CART UPDATE ERROR:');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Error name:', error.name);
       el.disabled = false;
       el.classList.remove('is-updating');
     });
