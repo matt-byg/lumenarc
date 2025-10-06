@@ -7324,31 +7324,28 @@ $(function () {
     });
   }
 
-  // Handle cart form submission for real cart updates
+  // Handle contact form submission - update cart first, then submit contact form
   document.addEventListener('submit', function (e) {
     var form = e.target;
     if (form.id === 'cart_form' && form.tagName === 'FORM') {
-      console.log('Cart form submitted');
+      console.log('Contact form submitted - updating cart first');
       e.preventDefault(); // Prevent default form submission
       
-      // Get all quantity inputs
-      var quantityInputs = form.querySelectorAll('input[name^="updates["]');
+      // Get all quantity inputs and update cart
+      var quantityInputs = form.querySelectorAll('input[data-line-id]');
       var updates = {};
       
       quantityInputs.forEach(function(input) {
-        var lineIndex = input.name.match(/updates\[(\d+)\]/);
-        if (lineIndex) {
-          var line = parseInt(lineIndex[1], 10);
-          var quantity = parseInt(input.value, 10);
-          if (!isNaN(quantity) && quantity >= 0) {
-            updates[line] = quantity;
-          }
+        var line = parseInt(input.getAttribute('data-line-id'), 10);
+        var quantity = parseInt(input.value, 10);
+        if (!isNaN(quantity) && quantity >= 0 && line > 0) {
+          updates[line] = quantity;
         }
       });
       
       console.log('Cart updates:', updates);
       
-      // Submit updates to cart
+      // Update cart first
       fetch('/cart/update.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -7368,8 +7365,9 @@ $(function () {
           refreshCart(cart);
         }
         
-        // Reload the page to show updated cart
-        window.location.reload();
+        // Now submit the contact form
+        console.log('Submitting contact form...');
+        form.submit();
       })
       .catch(function(error) {
         console.error('Cart update error:', error);
