@@ -7597,6 +7597,10 @@ $(function () {
     if ($floating.length) {
       $floating.text(cart.item_count);
     }
+    var $top = $('.quote-cart-count-top');
+    if ($top.length) {
+      $top.text(cart.item_count);
+    }
   } //Terms and conditions agreement check
 
 

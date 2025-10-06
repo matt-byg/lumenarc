@@ -284,13 +284,6 @@
   </section>
 </div>
 
-<!-- Floating simple quote cart display (always visible) -->
-<div id="quote-cart-display" class="quote-cart-display" style="position:fixed;right:12px;bottom:12px;background:#fff;border:1px solid #e6e6e6;padding:8px 12px;border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.06);z-index:9999;font-size:13px;">
-  <a href="{{ routes.cart_url }}" style="color:#333;text-decoration:none;">
-    Quote Request: <span class="quote-cart-count">{{ cart.item_count }}</span>
-  </a>
-</div>
-
 <section class="section">
   <div
     class="
@@ -299,6 +292,13 @@
       header-container
     "
   >
+    <!-- Top header quote cart indicator (aligned right within header container) -->
+    <div id="quote-cart-top" class="quote-cart-top">
+      <a href="{{ routes.cart_url }}" class="quote-cart-top-link">
+        <span class="quote-cart-top-text">Quote Request</span>
+        <span class="quote-cart-count-top">{{ cart.item_count }}</span>
+      </a>
+    </div>
     <div
       class="
         one-whole
