@@ -7324,7 +7324,61 @@ $(function () {
     });
   }
 
-  // Persist cart quantity edits and update header counts via fetch API
+  // Handle cart form submission for real cart updates
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (form.id === 'cart_form' && form.tagName === 'FORM') {
+      console.log('Cart form submitted');
+      e.preventDefault(); // Prevent default form submission
+      
+      // Get all quantity inputs
+      var quantityInputs = form.querySelectorAll('input[name^="updates["]');
+      var updates = {};
+      
+      quantityInputs.forEach(function(input) {
+        var lineIndex = input.name.match(/updates\[(\d+)\]/);
+        if (lineIndex) {
+          var line = parseInt(lineIndex[1], 10);
+          var quantity = parseInt(input.value, 10);
+          if (!isNaN(quantity) && quantity >= 0) {
+            updates[line] = quantity;
+          }
+        }
+      });
+      
+      console.log('Cart updates:', updates);
+      
+      // Submit updates to cart
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates: updates })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(cart) {
+        console.log('Cart updated successfully:', cart.item_count, 'items');
+        
+        // Update all cart count elements
+        document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+          node.textContent = cart.item_count;
+        });
+        
+        // Call refreshCart function
+        if (typeof refreshCart === 'function') {
+          refreshCart(cart);
+        }
+        
+        // Reload the page to show updated cart
+        window.location.reload();
+      })
+      .catch(function(error) {
+        console.error('Cart update error:', error);
+        alert('Error updating cart. Please try again.');
+      });
+    }
+  });
+
+  // Also handle individual quantity changes for immediate updates
   document.addEventListener('change', function (e) {
     var el = e.target;
     console.log('Change event triggered on:', el.tagName, el.className, el.getAttribute('data-line-id')); // Debug log

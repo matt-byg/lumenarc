@@ -51,7 +51,7 @@
   {% else %}
     
       {%
-        form 'contact',
+        form 'cart',
         class: 'is-flex is-flex-wrap',
         id: 'cart_form'
       %}
@@ -175,7 +175,7 @@
                         type="number"
                         min="0"
                         size="2"
-                        name="contact[Product-{{ totalQty }}-Quantity]"
+                        name="updates[{{ forloop.index }}]"
                         value="{{ item.quantity }}"
                         data-line-id="{{ forloop.index }}"
                         {% if settings.limit_quantity and item.variant.inventory_management != blank and item.variant.inventory_quantity > 0 and item.variant.inventory_policy == "deny" %}
@@ -386,7 +386,7 @@
             action_button
           "
           type="submit"
-          value="{{ 'contact.form.send' | t }}"
+          value="{{ 'cart.general.update' | t }}"
         />
       </div>
 
