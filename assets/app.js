@@ -1,4 +1,7 @@
-/******/ (() => { // webpackBootstrap
+git fetch origin
+git diff --name-only HEAD origin/main
+git log --oneline HEAD..origin/main
+git log --oneline origin/main..HEAD/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 812:
