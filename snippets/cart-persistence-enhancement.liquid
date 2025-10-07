@@ -105,7 +105,11 @@
   
   // Handle both direct input changes and button clicks
   document.addEventListener('change', function (e) {
-    handleQuantityChange(e.target);
+    if (e.target.matches('input.quantity[data-line-id]')) {
+      handleQuantityChange(e.target);
+    } else if (e.target.matches('input.cart-location-input[data-line-id]')) {
+      handleLocationChange(e.target);
+    }
   });
   
   // Also handle plus/minus button clicks
@@ -222,6 +226,72 @@
     });
   }
   
+  function handleLocationChange(el) {
+    console.log('=== LOCATION CHANGE EVENT DEBUG ===');
+    console.log('Element:', el);
+    console.log('Value:', el.value);
+    console.log('Data-line-id:', el.getAttribute('data-line-id'));
+    console.log('Data-variant-id:', el.getAttribute('data-variant-id'));
+    console.log('==================================');
+    
+    var line = parseInt(el.getAttribute('data-line-id'), 10);
+    var location = el.value.trim();
+    
+    if (!line || line < 1) {
+      console.log('Invalid line ID for location:', line);
+      return;
+    }
+    
+    console.log('🛒 LOCATION UPDATE REQUEST:');
+    console.log('Line:', line);
+    console.log('Location:', location);
+    
+    el.disabled = true;
+    el.classList.add('is-updating');
+    
+    // Update cart item properties
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        line: Number(line), 
+        properties: { 'Location': location }
+      })
+    })
+    .then(function(res){ 
+      console.log('📡 Location API Response status:', res.status);
+      return res.json(); 
+    })
+    .then(function(cart){
+      console.log('✅ LOCATION UPDATE SUCCESS:');
+      console.log('Cart object:', cart);
+      
+      // Re-enable input
+      el.disabled = false;
+      el.classList.remove('is-updating');
+      
+      // Show success feedback (optional)
+      el.style.borderColor = '#28a745';
+      setTimeout(function() {
+        el.style.borderColor = '';
+      }, 1000);
+    })
+    .catch(function(error) {
+      console.error('❌ LOCATION UPDATE ERROR:');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      
+      el.disabled = false;
+      el.classList.remove('is-updating');
+      
+      // Show error feedback (optional)
+      el.style.borderColor = '#dc3545';
+      setTimeout(function() {
+        el.style.borderColor = '';
+      }, 2000);
+    });
+  }
+  
   // Debug: Check if we're on cart page
   if (window.location.pathname.indexOf('/cart') !== -1) {
     console.log('🛒 CART PAGE DETECTED - Setting up handlers');
@@ -232,6 +302,14 @@
     
     quantityInputs.forEach(function(input, index) {
       console.log('Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
+    });
+    
+    // Debug: Check if location inputs exist
+    var locationInputs = document.querySelectorAll('input.cart-location-input[data-line-id]');
+    console.log('Found', locationInputs.length, 'location inputs with data-line-id');
+    
+    locationInputs.forEach(function(input, index) {
+      console.log('Location Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
     });
     
     // Test the selector

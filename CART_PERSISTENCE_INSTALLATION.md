@@ -5,6 +5,7 @@ This package provides cart quantity persistence functionality for Shopify themes
 ## 🎯 What This Provides
 
 - ✅ **Cart quantity changes persist** when navigating away from cart page
+- ✅ **Location field changes persist** when navigating away from cart page
 - ✅ **Real-time header cart count updates** 
 - ✅ **Works with both direct input changes and plus/minus buttons**
 - ✅ **Comprehensive debugging** for troubleshooting
