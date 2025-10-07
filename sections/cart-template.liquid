@@ -149,6 +149,7 @@
                   id="contactFormLocation_{{ totalQty }}"
                   type="text"
                   class="cart-location-input"
+                  name="contact[Product-{{ totalQty }}-Location]"
                   data-line-id="{{ forloop.index }}"
                   data-variant-id="{{ item.variant.id }}"
                   placeholder="Location"
@@ -466,6 +467,9 @@
         {% endform %}
   {% endif %}
 </section>
+
+{% comment %} Include cart persistence enhancement {% endcomment %}
+{% render 'cart-persistence-enhancement' %}
 
 {% schema %}
   {
