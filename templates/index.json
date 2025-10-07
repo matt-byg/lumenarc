@@ -21,8 +21,8 @@
         "nav_separator": "solid",
         "show_currency_selector": false,
         "show_locale_selector": false,
-        "show_search": true,
-        "show_cart": true,
+        "show_search": false,
+        "show_cart": false,
         "cart_icon": "cart",
         "cart_text": "Cart",
         "show_cart_count": true

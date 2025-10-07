@@ -99,22 +99,6 @@
 >
   <section class="section">
     <div class="container">
-      {% if section.settings.search_box_top_bar %}
-        <div
-          class="
-            one-fourth
-            column
-            medium-down--one-whole
-            top_bar_search
-          "
-        >
-          {%
-            render 'search-form',
-            context: 'header',
-            show_overlay: true,
-          %}
-        </div>
-      {% endif %}
 
       {% if currency_selector == true or locale_selector == true %}
         <div
@@ -230,18 +214,6 @@
             {% endif %}
           {% endif %}
 
-          <li class="top-bar__menu-item">
-            <a
-              class="
-                top-bar__menu-item-link
-                cart_button
-              "
-              href="{{ routes.cart_url }}"
-            >
-              <span class="icon-cart"></span>
-              {{ 'Quotation' }} (<span class="cart_count">{{ cart.item_count }}</span>)
-            </a>
-          </li>
 
           
 
@@ -294,13 +266,6 @@
       header-container
     "
   >
-    <!-- Top header quote cart indicator (aligned right within header container) -->
-    <div id="quote-cart-top" class="quote-cart-top">
-      <a href="{{ routes.cart_url }}" class="quote-cart-top-link">
-        <span class="quote-cart-top-text">Quotation</span>
-        <span class="quote-cart-count-top">{{ cart.item_count }}</span>
-      </a>
-    </div>
     <div
       class="
         one-whole
@@ -358,8 +323,6 @@
               back_to_basics: true,
               focal_point: section.settings.logo.presentation.focal_point,
             %}
-          {% else %}
-            {{ shop.name }}
           {% endif %}
         </span>
       </a>
