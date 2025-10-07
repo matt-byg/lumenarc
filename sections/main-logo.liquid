@@ -1,0 +1,127 @@
+{% comment %}
+** Main Logo Section **
+- Single prominent logo display
+- Centered under header, above slideshow
+{% endcomment %}
+
+{% style %}
+  .main-logo-section {
+    text-align: center;
+    padding: 20px 0;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .main-logo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .main-logo {
+    max-width: {{ section.settings.logo_max_width }}px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .main-logo-link {
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .main-logo-link:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  @media screen and (max-width: 768px) {
+    .main-logo-section {
+      padding: 15px 0;
+    }
+    
+    .main-logo {
+      max-width: {{ section.settings.logo_max_width | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<section class="main-logo-section" {{ section.shopify_attributes }}>
+  <div class="main-logo-container">
+    {% if section.settings.logo_image != blank %}
+      {% if section.settings.logo_link != blank %}
+        <a href="{{ section.settings.logo_link }}" class="main-logo-link">
+      {% endif %}
+      
+      <img 
+        src="{{ section.settings.logo_image | img_url: 'master' }}" 
+        alt="{{ section.settings.logo_alt_text | default: shop.name }}"
+        class="main-logo"
+      >
+      
+      {% if section.settings.logo_link != blank %}
+        </a>
+      {% endif %}
+    {% else %}
+      <div class="main-logo-placeholder">
+        <p>Please add a logo image in the theme settings</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main Logo",
+  "class": "shopify-section--main-logo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "Recommended size: 400x200px or similar aspect ratio"
+    },
+    {
+      "type": "text",
+      "id": "logo_alt_text",
+      "label": "Logo Alt Text",
+      "default": "Lumenarc",
+      "info": "Alternative text for accessibility"
+    },
+    {
+      "type": "url",
+      "id": "logo_link",
+      "label": "Logo Link",
+      "info": "Optional - where the logo should link to (usually homepage)"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "label": "Logo Max Width",
+      "min": 200,
+      "max": 600,
+      "step": 50,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Logo"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "index",
+      "product",
+      "collection",
+      "page"
+    ]
+  }
+}
+{% endschema %}

@@ -20,17 +20,6 @@
     align-items: center;
   }
 
-  .ai-top-header-bar-store-name-{{ ai_gen_id }} {
-    color: {{ block.settings.text_color }};
-    font-size: {{ block.settings.store_name_size }}px;
-    font-weight: {{ block.settings.store_name_weight }};
-    text-decoration: none;
-    margin: 0;
-  }
-
-  .ai-top-header-bar-store-name-{{ ai_gen_id }}:hover {
-    color: {{ block.settings.text_hover_color }};
-  }
 
   .ai-top-header-bar-cart-{{ ai_gen_id }} {
     display: flex;
@@ -72,9 +61,6 @@
       padding: 0 15px;
     }
 
-    .ai-top-header-bar-store-name-{{ ai_gen_id }} {
-      font-size: {{ block.settings.store_name_size | times: 0.9 }}px;
-    }
 
     .ai-top-header-bar-cart-text-{{ ai_gen_id }} {
       display: none;
@@ -84,13 +70,7 @@
 
 <div class="ai-top-header-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-top-header-bar-container-{{ ai_gen_id }}">
-    <a href="/" class="ai-top-header-bar-store-name-{{ ai_gen_id }}">
-      {% if block.settings.store_name != blank %}
-        {{ block.settings.store_name }}
-      {% else %}
-        {{ shop.name }}
-      {% endif %}
-    </a>
+    <div></div>
 
     <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
       <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -110,50 +90,6 @@
 {
   "name": "Top header bar",
   "settings": [
-    {
-      "type": "header",
-      "content": "Store name"
-    },
-    {
-      "type": "text",
-      "id": "store_name",
-      "label": "Store name",
-      "info": "Leave blank to use your shop name"
-    },
-    {
-      "type": "range",
-      "id": "store_name_size",
-      "label": "Store name size",
-      "min": 14,
-      "max": 32,
-      "step": 1,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "select",
-      "id": "store_name_weight",
-      "label": "Store name weight",
-      "options": [
-        {
-          "value": "400",
-          "label": "Normal"
-        },
-        {
-          "value": "500",
-          "label": "Medium"
-        },
-        {
-          "value": "600",
-          "label": "Semi-bold"
-        },
-        {
-          "value": "700",
-          "label": "Bold"
-        }
-      ],
-      "default": "600"
-    },
     {
       "type": "header",
       "content": "Cart"
