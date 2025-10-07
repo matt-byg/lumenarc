@@ -1,0 +1,316 @@
+{% comment %}
+  Cart Persistence Enhancement Snippet
+  
+  This snippet provides:
+  - Cart quantity changes that persist when navigating away
+  - Real-time header cart count updates
+  - Support for both direct input changes and plus/minus buttons
+  - Comprehensive debugging for troubleshooting
+  
+  Usage: Include this snippet in your theme.liquid file before closing </body> tag
+  {% render 'cart-persistence-enhancement' %}
+{% endcomment %}
+
+<script>
+(function() {
+  'use strict';
+  
+  // Cart Persistence Enhancement
+  console.log('🛒 Cart Persistence Enhancement loaded');
+  
+  // Enhanced refreshCart function
+  function refreshCart(cart) {
+    const $cartBtn = $(".cart_button");
+    
+    if ($cartBtn) {
+      var $cartCount = $cartBtn.find('.cart_count');
+      if ($cartCount.length) {
+        $cartCount.text(cart.item_count);
+      }
+    }
+    
+    // Update simple floating quote cart if present
+    var $floating = $('.quote-cart-count');
+    if ($floating.length) {
+      $floating.text(cart.item_count);
+    }
+    var $top = $('.quote-cart-count-top');
+    if ($top.length) {
+      $top.text(cart.item_count);
+    }
+    
+    // Update AI generated header cart count
+    $('[class^="ai-top-header-bar-cart-count-"]').text(cart.item_count);
+    
+    // Update any other cart count selectors
+    document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+      node.textContent = cart.item_count;
+    });
+  }
+  
+  // Make refreshCart globally available
+  window.refreshCart = refreshCart;
+  
+  // Handle contact form submission - update cart first, then submit contact form
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (form.id === 'cart_form' && form.tagName === 'FORM') {
+      console.log('Contact form submitted - updating cart first');
+      e.preventDefault();
+      
+      // Get all quantity inputs and update cart
+      var quantityInputs = form.querySelectorAll('input[data-line-id]');
+      var updates = {};
+      
+      quantityInputs.forEach(function(input) {
+        var line = parseInt(input.getAttribute('data-line-id'), 10);
+        var quantity = parseInt(input.value, 10);
+        if (!isNaN(quantity) && quantity >= 0 && line > 0) {
+          updates[line] = quantity;
+        }
+      });
+      
+      console.log('Cart updates:', updates);
+      
+      // Update cart first
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates: updates })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(cart) {
+        console.log('Cart updated successfully:', cart.item_count, 'items');
+        
+        // Update all cart count elements
+        document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+          node.textContent = cart.item_count;
+        });
+        
+        // Call refreshCart function
+        if (typeof refreshCart === 'function') {
+          refreshCart(cart);
+        }
+        
+        // Now submit the contact form
+        console.log('Submitting contact form...');
+        form.submit();
+      })
+      .catch(function(error) {
+        console.error('Cart update error:', error);
+        alert('Error updating cart. Please try again.');
+      });
+    }
+  });
+  
+  // Handle both direct input changes and button clicks
+  document.addEventListener('change', function (e) {
+    handleQuantityChange(e.target);
+  });
+  
+  // Also handle plus/minus button clicks
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.js-change-quantity')) {
+      console.log('🔄 Plus/minus button clicked');
+      // Wait a moment for the value to update, then handle the change
+      setTimeout(function() {
+        var input = e.target.closest('.purchase-details__quantity, .cart--info-wrapper').querySelector('input.quantity[data-line-id]');
+        if (input) {
+          console.log('🔄 Handling button click change for input:', input);
+          handleQuantityChange(input);
+        }
+      }, 100);
+    }
+  });
+  
+  function handleQuantityChange(el) {
+    console.log('=== CHANGE EVENT DEBUG ===');
+    console.log('Element:', el);
+    console.log('Tag:', el.tagName);
+    console.log('Classes:', el.className);
+    console.log('Data-line-id:', el.getAttribute('data-line-id'));
+    console.log('Name:', el.name);
+    console.log('Value:', el.value);
+    console.log('========================');
+    
+    // Only act on cart quantity inputs
+    if (!el.matches('input.quantity[data-line-id]')) {
+      console.log('Not a cart quantity input, skipping');
+      return;
+    }
+    
+    console.log('✅ This is a cart quantity input - proceeding with update');
+    
+    var qty = parseInt(el.value, 10);
+    if (isNaN(qty) || qty < 0) qty = 0;
+    
+    var line = parseInt(el.getAttribute('data-line-id'), 10);
+    if (!line || line < 1) {
+      console.log('Invalid line ID:', line);
+      return;
+    }
+    
+    console.log('🛒 CART UPDATE REQUEST:');
+    console.log('Line:', line);
+    console.log('Quantity:', qty);
+    console.log('Request body:', JSON.stringify({ line: Number(line), quantity: Number(qty) }));
+    
+    el.disabled = true;
+    el.classList.add('is-updating');
+    
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ line: Number(line), quantity: Number(qty) })
+    })
+    .then(function(res){ 
+      console.log('📡 API Response status:', res.status);
+      console.log('📡 API Response headers:', res.headers);
+      return res.json(); 
+    })
+    .then(function(cart){
+      console.log('✅ CART UPDATE SUCCESS:');
+      console.log('Cart object:', cart);
+      console.log('Item count:', cart.item_count);
+      console.log('Items:', cart.items);
+      
+      // Update all cart count elements
+      document.querySelectorAll('.cart_count, .quote-cart-count-top, .quote-cart-count, .cart-count-number, [class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+        node.textContent = cart.item_count;
+      });
+      
+      // Also try more specific selectors for AI header
+      document.querySelectorAll('[class*="ai-top-header-bar-cart-count"]').forEach(function(node){
+        node.textContent = cart.item_count;
+      });
+      
+      // Call the refreshCart function as well to ensure consistency
+      if (typeof refreshCart === 'function') {
+        refreshCart(cart);
+      }
+      
+      // Don't reload cart page, just re-enable input and update display
+      el.disabled = false;
+      el.classList.remove('is-updating');
+      
+      // Update the cart item display on the page
+      var $cartItem = el.closest('.cart--info-wrapper');
+      if ($cartItem.length) {
+        // Update any price displays or other cart item info if needed
+        var $priceDisplay = $cartItem.find('.price_total .money');
+        if ($priceDisplay.length && cart.items) {
+          // Find the matching cart item and update price if needed
+          var lineId = parseInt(el.getAttribute('data-line-id'), 10);
+          var matchingItem = cart.items.find(function(item, index) {
+            return (index + 1) === lineId;
+          });
+          if (matchingItem) {
+            // Update price display if needed
+            // This is optional - the main cart count update is what we need
+          }
+        }
+      }
+    })
+    .catch(function(error) {
+      console.error('❌ CART UPDATE ERROR:');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Error name:', error.name);
+      el.disabled = false;
+      el.classList.remove('is-updating');
+    });
+  }
+  
+  // Debug: Check if we're on cart page
+  if (window.location.pathname.indexOf('/cart') !== -1) {
+    console.log('🛒 CART PAGE DETECTED - Setting up handlers');
+    
+    // Debug: Check if quantity inputs exist
+    var quantityInputs = document.querySelectorAll('input.quantity[data-line-id]');
+    console.log('Found', quantityInputs.length, 'quantity inputs with data-line-id');
+    
+    quantityInputs.forEach(function(input, index) {
+      console.log('Input', index, ':', input.className, 'data-line-id:', input.getAttribute('data-line-id'), 'value:', input.value);
+    });
+    
+    // Test the selector
+    console.log('Testing selector input.quantity[data-line-id]:', document.querySelectorAll('input.quantity[data-line-id]').length);
+    console.log('All quantity inputs:', document.querySelectorAll('input.quantity').length);
+    console.log('All inputs with data-line-id:', document.querySelectorAll('input[data-line-id]').length);
+    
+    // Test if event listener is working
+    console.log('🎯 Event listeners attached - try changing a quantity to see debug output');
+  }
+  
+})();
+</script>
+
+{% comment %}
+  CSS Enhancements for Cart Styling
+  Add these styles to your theme's CSS file or in a <style> tag
+{% endcomment %}
+
+<style>
+  /* Cart spacing improvements */
+  .shopify-section--cart-template .cart--info-wrapper {
+    display: flex;
+    padding-bottom: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid #c2c1cc;
+  }
+  
+  /* Remove vertical spacing from cart images */
+  .shopify-section--cart-template .cart_image .image-element__wrap {
+    float: left;
+    margin-right: 20px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  @media only screen and (max-width: 798px) {
+    .shopify-section--cart-template .cart_image .image-element__wrap {
+      float: none;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
+  
+  .shopify-section--cart-template .cart_image .image-element__wrap img {
+    max-width: 180px;
+    min-width: 180px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  @media only screen and (max-width: 480px) {
+    .shopify-section--cart-template .cart_image .image-element__wrap img {
+      margin: 0;
+      max-width: 150px;
+      min-width: 150px;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
+  
+  /* Fixed height for cart images */
+  .shopify-section--cart-template .cart--info-wrapper .cart_image .image-element__wrap img {
+    max-width: 60px;
+    min-width: 60px;
+    max-height: 100px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+</style>
