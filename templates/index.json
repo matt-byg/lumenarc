@@ -16,9 +16,6 @@
         "ai_gen_block_67a11bf_mbfUzE": {
           "type": "ai_gen_block_67a11bf",
           "settings": {
-            "store_name": "",
-            "store_name_size": 20,
-            "store_name_weight": "600",
             "show_cart_text": true,
             "cart_text": "Quote Request",
             "show_cart_count": true,
@@ -43,7 +40,7 @@
     "main_logo": {
       "type": "main-logo",
       "settings": {
-        "logo_image": "shopify://shop_images/lumenarc-logo.jpg",
+        "logo_image": "shopify://shop_images/Lumenarc_TM_logo_60138359-9601-4367-9239-ea68b355c47d.jpg",
         "logo_alt_text": "Lumenarc",
         "logo_link": "/",
         "logo_max_width": 400,
