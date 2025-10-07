@@ -40,6 +40,16 @@
       ],
       "settings": {}
     },
+    "main_logo": {
+      "type": "main-logo",
+      "settings": {
+        "logo_image": "shopify://shop_images/lumenarc-logo.jpg",
+        "logo_alt_text": "Lumenarc",
+        "logo_link": "/",
+        "logo_max_width": 400,
+        "background_color": "#ffffff"
+      }
+    },
     "slideshow": {
       "type": "slideshow",
       "blocks": {
@@ -738,6 +748,7 @@
   },
   "order": [
     "1759778761ab6ac403",
+    "main_logo",
     "slideshow",
     "featured-text",
     "collection_list_Ea9X76",
