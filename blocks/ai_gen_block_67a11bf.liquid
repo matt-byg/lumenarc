@@ -6,9 +6,9 @@
 
 {% style %}
   .ai-top-header-bar-{{ ai_gen_id }} {
-    background-color: {{ block.settings.background_color }};
+    background-color: transparent;
     padding: {{ block.settings.padding }}px 0;
-    border-bottom: 1px solid {{ block.settings.border_color }};
+    border-bottom: none;
   }
 
   .ai-top-header-bar-container-{{ ai_gen_id }} {
@@ -16,7 +16,7 @@
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
 
@@ -70,8 +70,6 @@
 
 <div class="ai-top-header-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-top-header-bar-container-{{ ai_gen_id }}">
-    <div></div>
-
     <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
       <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"></circle>
