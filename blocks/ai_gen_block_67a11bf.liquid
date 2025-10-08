@@ -16,8 +16,59 @@
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: flex-end;
+    {% if block.settings.show_search %}
+      justify-content: space-between;
+    {% else %}
+      justify-content: flex-end;
+    {% endif %}
     align-items: center;
+    gap: 20px;
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} {
+    flex: 1;
+    max-width: 500px;
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .search-form {
+    margin: 0;
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .search-form__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .search-form__input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    border: 1px solid {{ block.settings.search_border_color }};
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: {{ block.settings.search_bg_color }};
+    color: {{ block.settings.search_text_color }};
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .search-form__input::placeholder {
+    color: {{ block.settings.search_placeholder_color }};
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .search-form__submit-button {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    color: {{ block.settings.search_icon_color }};
+  }
+
+  .ai-top-header-bar-search-{{ ai_gen_id }} .icon-search:before {
+    content: "🔍";
+    font-size: 16px;
   }
 
 
@@ -59,8 +110,12 @@
   @media screen and (max-width: 768px) {
     .ai-top-header-bar-container-{{ ai_gen_id }} {
       padding: 0 15px;
+      gap: 10px;
     }
 
+    .ai-top-header-bar-search-{{ ai_gen_id }} {
+      max-width: none;
+    }
 
     .ai-top-header-bar-cart-text-{{ ai_gen_id }} {
       display: none;
@@ -70,6 +125,12 @@
 
 <div class="ai-top-header-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-top-header-bar-container-{{ ai_gen_id }}">
+    {% if block.settings.show_search %}
+      <div class="ai-top-header-bar-search-{{ ai_gen_id }}">
+        {% render 'search-form', context: 'header' %}
+      </div>
+    {% endif %}
+    
     <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
       <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"></circle>
@@ -88,6 +149,46 @@
 {
   "name": "Top header bar",
   "settings": [
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search box",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "search_bg_color",
+      "label": "Search background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "search_text_color",
+      "label": "Search text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "search_border_color",
+      "label": "Search border color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "search_placeholder_color",
+      "label": "Search placeholder color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "search_icon_color",
+      "label": "Search icon color",
+      "default": "#666666"
+    },
     {
       "type": "header",
       "content": "Cart"

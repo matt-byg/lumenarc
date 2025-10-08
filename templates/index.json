@@ -34,6 +34,12 @@
         "ai_gen_block_67a11bf_mbfUzE": {
           "type": "ai_gen_block_67a11bf",
           "settings": {
+            "show_search": true,
+            "search_bg_color": "#ffffff",
+            "search_text_color": "#000000",
+            "search_border_color": "#cccccc",
+            "search_placeholder_color": "#999999",
+            "search_icon_color": "#666666",
             "show_cart_text": true,
             "cart_text": "Quote Request",
             "show_cart_count": true,
