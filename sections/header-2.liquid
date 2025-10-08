@@ -1,0 +1,483 @@
+{% comment %}
+Header 2 - Secondary header for non-homepage and non-cart pages
+Structure:
+1. AI-generated top header bar
+2. Small gap
+3. Main horizontal menu
+4. Breadcrumbs
+{% endcomment %}
+
+<div class="header-2-wrapper">
+  {% comment %} AI-generated top header bar {% endcomment %}
+  {% for block in section.blocks %}
+    {% if block.type == 'ai_top_bar' %}
+      {% render block %}
+    {% endif %}
+  {% endfor %}
+
+  {% comment %} Small gap {% endcomment %}
+  <div class="header-2-gap"></div>
+
+  {% comment %} Main horizontal menu {% endcomment %}
+  <div class="header-2-menu">
+    <nav class="header-2-nav">
+      {% if section.settings.menu != blank %}
+        {% for link in linklists[section.settings.menu].links %}
+          <div class="header-2-menu-item {% if link.active %}active{% endif %}">
+            <a href="{{ link.url }}" class="header-2-menu-link">
+              {{ link.title }}
+            </a>
+            
+            {% comment %} Dropdown submenu {% endcomment %}
+            {% if link.links.size > 0 %}
+              <div class="header-2-submenu">
+                {% for sublink in link.links %}
+                  <a href="{{ sublink.url }}" class="header-2-submenu-link">
+                    {{ sublink.title }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </nav>
+  </div>
+
+  {% comment %} Breadcrumbs {% endcomment %}
+  <div class="header-2-breadcrumbs">
+    {% if template contains 'product' %}
+      {% render 'product-breadcrumbs' %}
+    {% elsif template contains 'collection' %}
+      {% render 'collection-breadcrumbs' %}
+    {% elsif template contains 'blog' %}
+      {% render 'blog-breadcrumbs' %}
+    {% elsif template contains 'article' %}
+      {% render 'article-breadcrumbs' %}
+    {% elsif template contains 'page' %}
+      {% render 'page-breadcrumbs' %}
+    {% else %}
+      {% render 'default-breadcrumbs' %}
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .header-2-wrapper {
+    background-color: {{ section.settings.background_color }};
+    border-bottom: 1px solid {{ section.settings.border_color }};
+  }
+
+  .header-2-gap {
+    height: {{ section.settings.gap_size }}px;
+  }
+
+  .header-2-menu {
+    padding: 0 {{ section.settings.menu_padding }}px;
+  }
+
+  .header-2-nav {
+    display: flex;
+    justify-content: {{ section.settings.menu_alignment }};
+    align-items: center;
+    flex-wrap: wrap;
+    gap: {{ section.settings.menu_gap }}px;
+  }
+
+  .header-2-menu-item {
+    position: relative;
+  }
+
+  .header-2-menu-link {
+    display: block;
+    padding: {{ section.settings.menu_padding_vertical }}px {{ section.settings.menu_padding_horizontal }}px;
+    color: {{ section.settings.menu_text_color }};
+    text-decoration: none;
+    font-size: {{ section.settings.menu_font_size }}px;
+    font-weight: {{ section.settings.menu_font_weight }};
+    transition: color 0.3s ease;
+  }
+
+  .header-2-menu-link:hover {
+    color: {{ section.settings.menu_hover_color }};
+  }
+
+  .header-2-menu-item.active .header-2-menu-link {
+    color: {{ section.settings.menu_active_color }};
+    font-weight: {{ section.settings.menu_active_font_weight }};
+  }
+
+  .header-2-submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: {{ section.settings.submenu_background_color }};
+    border: 1px solid {{ section.settings.submenu_border_color }};
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-width: 200px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .header-2-menu-item:hover .header-2-submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .header-2-submenu-link {
+    display: block;
+    padding: 12px 16px;
+    color: {{ section.settings.submenu_text_color }};
+    text-decoration: none;
+    border-bottom: 1px solid {{ section.settings.submenu_border_color }};
+    transition: background-color 0.3s ease;
+  }
+
+  .header-2-submenu-link:hover {
+    background-color: {{ section.settings.submenu_hover_background_color }};
+  }
+
+  .header-2-submenu-link:last-child {
+    border-bottom: none;
+  }
+
+  .header-2-breadcrumbs {
+    padding: {{ section.settings.breadcrumb_padding_vertical }}px {{ section.settings.breadcrumb_padding_horizontal }}px;
+    background-color: {{ section.settings.breadcrumb_background_color }};
+    border-top: 1px solid {{ section.settings.breadcrumb_border_color }};
+  }
+
+  .header-2-breadcrumbs .breadcrumb {
+    margin: 0;
+    font-size: {{ section.settings.breadcrumb_font_size }}px;
+    color: {{ section.settings.breadcrumb_text_color }};
+  }
+
+  .header-2-breadcrumbs .breadcrumb a {
+    color: {{ section.settings.breadcrumb_link_color }};
+    text-decoration: none;
+  }
+
+  .header-2-breadcrumbs .breadcrumb a:hover {
+    color: {{ section.settings.breadcrumb_hover_color }};
+  }
+
+  .header-2-breadcrumbs .icon-right-arrow {
+    margin: 0 8px;
+    color: {{ section.settings.breadcrumb_separator_color }};
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .header-2-nav {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .header-2-menu-item {
+      border-bottom: 1px solid {{ section.settings.menu_border_color }};
+    }
+
+    .header-2-menu-link {
+      padding: 16px;
+    }
+
+    .header-2-submenu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      border: none;
+      border-left: 3px solid {{ section.settings.menu_active_color }};
+      margin-left: 20px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header 2",
+  "class": "header-2-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "AI Top Bar"
+    },
+    {
+      "type": "text",
+      "id": "ai_block_id",
+      "label": "AI Block ID",
+      "info": "Enter the ID of the AI-generated top bar block to include"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "gap_size",
+      "label": "Gap Size",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Main Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_alignment",
+      "label": "Menu Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "menu_gap",
+      "label": "Menu Item Gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "label": "Menu Container Padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "menu_padding_horizontal",
+      "label": "Menu Item Horizontal Padding",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "menu_padding_vertical",
+      "label": "Menu Item Vertical Padding",
+      "min": 5,
+      "max": 20,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "menu_text_color",
+      "label": "Menu Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "menu_hover_color",
+      "label": "Menu Hover Color",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "menu_active_color",
+      "label": "Menu Active Color",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "menu_border_color",
+      "label": "Menu Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "label": "Menu Font Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "menu_font_weight",
+      "label": "Menu Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "menu_active_font_weight",
+      "label": "Active Menu Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Submenu"
+    },
+    {
+      "type": "color",
+      "id": "submenu_background_color",
+      "label": "Submenu Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "submenu_border_color",
+      "label": "Submenu Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "submenu_text_color",
+      "label": "Submenu Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "submenu_hover_background_color",
+      "label": "Submenu Hover Background Color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "header",
+      "content": "Breadcrumbs"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_background_color",
+      "label": "Breadcrumb Background Color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_border_color",
+      "label": "Breadcrumb Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_text_color",
+      "label": "Breadcrumb Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_link_color",
+      "label": "Breadcrumb Link Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_hover_color",
+      "label": "Breadcrumb Hover Color",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_separator_color",
+      "label": "Breadcrumb Separator Color",
+      "default": "#999999"
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_padding_horizontal",
+      "label": "Breadcrumb Horizontal Padding",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_padding_vertical",
+      "label": "Breadcrumb Vertical Padding",
+      "min": 5,
+      "max": 20,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_font_size",
+      "label": "Breadcrumb Font Size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ai_top_bar",
+      "name": "AI Top Bar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "ai_block_reference",
+          "label": "AI Block Reference",
+          "info": "Reference to the AI-generated block ID"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header 2"
+    }
+  ]
+}
+{% endschema %}

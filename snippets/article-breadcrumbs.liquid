@@ -1,0 +1,16 @@
+{% comment %} Article page breadcrumbs {% endcomment %}
+<div class="breadcrumb">
+  <span>
+    <a href="{{ routes.root_url }}" title="{{ shop.name | escape }}">
+      <span>{{ 'general.breadcrumbs.home' | t }}</span>
+    </a>
+  </span>
+  <span class="icon-right-arrow"></span>
+  <span>
+    <a href="{{ blog.url }}" title="{{ blog.title | escape }}">
+      <span>{{ blog.title }}</span>
+    </a>
+  </span>
+  <span class="icon-right-arrow"></span>
+  <span>{{ article.title }}</span>
+</div>

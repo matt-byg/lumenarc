@@ -1,0 +1,10 @@
+{% comment %} Default breadcrumbs for other page types {% endcomment %}
+<div class="breadcrumb">
+  <span>
+    <a href="{{ routes.root_url }}" title="{{ shop.name | escape }}">
+      <span>{{ 'general.breadcrumbs.home' | t }}</span>
+    </a>
+  </span>
+  <span class="icon-right-arrow"></span>
+  <span>{{ page_title }}</span>
+</div>
