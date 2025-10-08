@@ -73,6 +73,52 @@
                 <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
               {% endif %}
 
+            {% when 'stock_status' %}
+              <div class="product__stock-status">
+                {%- if variant.inventory_quantity > 0 -%}
+                  <p class="product__stock-status--in-stock">
+                    <span class="stock-indicator">●</span>
+                    {{ variant.inventory_quantity }} In Stock
+                  </p>
+                {%- else -%}
+                  <p class="product__stock-status--special-order">
+                    <span class="stock-indicator">●</span>
+                    By Special Order
+                  </p>
+                {% endif %}
+              </div>
+              
+              <style>
+                .product__stock-status {
+                  margin: 10px 0;
+                }
+                
+                .product__stock-status p {
+                  margin: 0;
+                  font-size: 14px;
+                  font-weight: 500;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                }
+                
+                .product__stock-status--in-stock {
+                  color: #28a745;
+                }
+                
+                .product__stock-status--in-stock .stock-indicator {
+                  color: #28a745;
+                }
+                
+                .product__stock-status--special-order {
+                  color: #ffc107;
+                }
+                
+                .product__stock-status--special-order .stock-indicator {
+                  color: #ffc107;
+                }
+              </style>
+
             {% when 'sku' %}
               {% if variant.sku != blank %}
                 <p class="sku">
