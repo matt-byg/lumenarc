@@ -137,7 +137,7 @@
                 {%- assign current_variant = item.variant -%}
                 {%- if current_variant.available and current_variant.inventory_quantity > 0 -%}
                   <p class="cart_product_status cart_product_status--in-stock">{{ current_variant.inventory_quantity }} In Stock</p>
-                {%- elsif current_variant.available and current_variant.inventory_management == blank and current_variant.inventory_quantity > 0 -%}
+                {%- elsif current_variant.available and current_variant.inventory_management == blank -%}
                   <p class="cart_product_status cart_product_status--in-stock">In Stock</p>
                 {%- else -%}
                   <p class="cart_product_status cart_product_status--special-order">By Special Order</p>
