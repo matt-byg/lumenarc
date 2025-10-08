@@ -25,6 +25,15 @@
     gap: 20px;
   }
 
+  {% comment %} Adjust layout when on cart page (no cart component) {% endcomment %}
+  .template-cart .ai-top-header-bar-container-{{ ai_gen_id }} {
+    {% if block.settings.show_search %}
+      justify-content: flex-start;
+    {% else %}
+      justify-content: center;
+    {% endif %}
+  }
+
   .ai-top-header-bar-search-{{ ai_gen_id }} {
     flex: 1;
     max-width: 500px;
@@ -122,17 +131,20 @@
       </div>
     {% endif %}
     
-    <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
-      <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
-      {% if block.settings.show_cart_text %}
-        <span class="ai-top-header-bar-cart-text-{{ ai_gen_id }}">{{ block.settings.cart_text }}</span>
-      {% endif %}
-      <span class="ai-top-header-bar-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
-    </a>
+    {% comment %} Hide cart component on cart page {% endcomment %}
+    {% unless template.name == 'cart' %}
+      <a href="{{ routes.cart_url }}" class="ai-top-header-bar-cart-{{ ai_gen_id }}">
+        <svg class="ai-top-header-bar-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        {% if block.settings.show_cart_text %}
+          <span class="ai-top-header-bar-cart-text-{{ ai_gen_id }}">{{ block.settings.cart_text }}</span>
+        {% endif %}
+        <span class="ai-top-header-bar-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
+      </a>
+    {% endunless %}
   </div>
 </div>
 
