@@ -99,11 +99,6 @@
                     By Special Order
                   </p>
                 {%- endif -%}
-                
-                {% comment %} Debug info - remove this after testing {% endcomment %}
-                <div style="font-size: 10px; color: #999; margin-top: 5px;">
-                  Debug: Available={{ current_variant.available }}, Qty={{ current_variant.inventory_quantity }}, Management={{ current_variant.inventory_management }}
-                </div>
               </div>
               
               <style>
@@ -113,11 +108,12 @@
                 
                 .product__stock-status p {
                   margin: 0;
-                  font-size: 14px;
+                  font-size: 16px;
                   font-weight: 500;
                   display: flex;
                   align-items: center;
                   gap: 8px;
+                  list-style: none;
                 }
                 
                 .product__stock-status--in-stock {
@@ -125,15 +121,15 @@
                 }
                 
                 .product__stock-status--in-stock .stock-indicator {
-                  color: #28a745;
+                  display: none;
                 }
                 
                 .product__stock-status--special-order {
-                  color: #ffc107;
+                  color: #d4af37;
                 }
                 
                 .product__stock-status--special-order .stock-indicator {
-                  color: #ffc107;
+                  display: none;
                 }
               </style>
 

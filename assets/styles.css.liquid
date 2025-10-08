@@ -13219,7 +13219,15 @@ body:not(.user-is-tabbing) input.search-form__input {
 }
 .shopify-section--cart-template .cart_product_status{
   margin: 0 0 7px 0;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 500;
+  list-style: none;
+}
+.shopify-section--cart-template .cart_product_status:contains("In Stock") {
+  color: #28a745;
+}
+.shopify-section--cart-template .cart_product_status:contains("Special Order") {
+  color: #d4af37;
 }
 .shopify-section--cart-template .price_total{
   font-size: 13px;

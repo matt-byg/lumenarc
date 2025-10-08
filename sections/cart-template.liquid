@@ -134,11 +134,18 @@
                     </a>
                 </p>
     
-                {%- if item.product.selected_or_first_available_variant.inventory_quantity > 0 -%}
-                  <p class="cart_product_status">{{ item.variant.inventory_quantity }} In stock</p>
+                {%- assign current_variant = item.variant -%}
+                {%- if current_variant.available -%}
+                  {%- if current_variant.inventory_management == blank -%}
+                    <p class="cart_product_status">In Stock</p>
+                  {%- elsif current_variant.inventory_quantity > 0 -%}
+                    <p class="cart_product_status">{{ current_variant.inventory_quantity }} In Stock</p>
+                  {%- else -%}
+                    <p class="cart_product_status">By Special Order</p>
+                  {%- endif -%}
                 {%- else -%}
                   <p class="cart_product_status">By Special Order</p>
-                {% endif %} 
+                {%- endif -%} 
 
               <div class="contact__form-location">
                 {% comment %}<label for="contactFormLocation_{{ totalQty }}">
