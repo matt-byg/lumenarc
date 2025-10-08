@@ -75,20 +75,11 @@
 
             {% when 'stock_status' %}
               <div class="product__stock-status">
-                {%- if variant.available and variant.inventory_management == blank -%}
+                {%- assign current_variant = product.selected_or_first_available_variant -%}
+                {%- if current_variant.inventory_quantity > 0 -%}
                   <p class="product__stock-status--in-stock">
                     <span class="stock-indicator">●</span>
-                    In Stock
-                  </p>
-                {%- elsif variant.available and variant.inventory_quantity > 0 -%}
-                  <p class="product__stock-status--in-stock">
-                    <span class="stock-indicator">●</span>
-                    {{ variant.inventory_quantity }} In Stock
-                  </p>
-                {%- elsif variant.available and variant.inventory_quantity <= 0 and variant.inventory_management != blank -%}
-                  <p class="product__stock-status--special-order">
-                    <span class="stock-indicator">●</span>
-                    By Special Order
+                    {{ current_variant.inventory_quantity }} In Stock
                   </p>
                 {%- else -%}
                   <p class="product__stock-status--special-order">
@@ -99,7 +90,7 @@
                 
                 {% comment %} Debug info - remove this after testing {% endcomment %}
                 <div style="font-size: 10px; color: #999; margin-top: 5px;">
-                  Debug: Available={{ variant.available }}, Qty={{ variant.inventory_quantity }}, Management={{ variant.inventory_management }}
+                  Debug: Available={{ current_variant.available }}, Qty={{ current_variant.inventory_quantity }}, Management={{ current_variant.inventory_management }}
                 </div>
               </div>
               
