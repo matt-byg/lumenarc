@@ -81,7 +81,7 @@
               <span class="stock-indicator">●</span>
               {{ current_variant.inventory_quantity }} In Stock
             </p>
-          {%- elsif current_variant.available and current_variant.inventory_management == blank -%}
+          {%- elsif current_variant.available and current_variant.inventory_management == blank and current_variant.inventory_quantity > 0 -%}
             <p class="product__stock-status--in-stock">
               <span class="stock-indicator">●</span>
               In Stock

@@ -137,16 +137,11 @@
                 {%- assign current_variant = item.variant -%}
                 {%- if current_variant.available and current_variant.inventory_quantity > 0 -%}
                   <p class="cart_product_status cart_product_status--in-stock">{{ current_variant.inventory_quantity }} In Stock</p>
-                {%- elsif current_variant.available and current_variant.inventory_management == blank -%}
+                {%- elsif current_variant.available and current_variant.inventory_management == blank and current_variant.inventory_quantity > 0 -%}
                   <p class="cart_product_status cart_product_status--in-stock">In Stock</p>
                 {%- else -%}
                   <p class="cart_product_status cart_product_status--special-order">By Special Order</p>
-                {%- endif -%}
-                
-                {% comment %} Debug info - remove after testing {% endcomment %}
-                <p style="font-size: 10px; color: #999;">
-                  Cart Debug: Available={{ current_variant.available }}, Qty={{ current_variant.inventory_quantity }}, Mgmt={{ current_variant.inventory_management }}
-                </p> 
+                {%- endif -%} 
 
               <div class="contact__form-location">
                 {% comment %}<label for="contactFormLocation_{{ totalQty }}">
