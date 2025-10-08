@@ -182,6 +182,10 @@
       %}
     </div>
 
+    {% comment %} AI Header - render first on all pages {% endcomment %}
+    {% section 'header-ai-top' %}
+
+    {% comment %} Product header with breadcrumbs {% endcomment %}
     {% if template.name contains 'product' %}
       {% render 'product-header' %}
     {% endif %}

@@ -10,39 +10,6 @@
 {
   "wrapper": "div.index-sections",
   "sections": {
-    "1759778761ab6ac403": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_67a11bf_mbfUzE": {
-          "type": "ai_gen_block_67a11bf",
-          "settings": {
-            "show_search": true,
-            "search_bg_color": "#ffffff",
-            "search_text_color": "#000000",
-            "search_border_color": "#cccccc",
-            "search_placeholder_color": "#999999",
-            "search_icon_color": "#666666",
-            "show_cart_text": true,
-            "cart_text": "Quote Request",
-            "show_cart_count": true,
-            "cart_icon_size": 20,
-            "cart_text_size": 14,
-            "background_color": "#eeeeee",
-            "text_color": "#d29800",
-            "text_hover_color": "#d29800",
-            "border_color": "#c2c1cc",
-            "cart_count_bg_color": "#ab7d07",
-            "cart_count_text_color": "#ffffff",
-            "padding": 12
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_67a11bf_mbfUzE"
-      ],
-      "settings": {}
-    },
     "main_logo": {
       "type": "main-logo",
       "settings": {
@@ -774,7 +741,6 @@
     }
   },
   "order": [
-    "1759778761ab6ac403",
     "main_logo",
     "header",
     "slideshow",
