@@ -242,19 +242,25 @@
       return;
     }
     
+    // Find the corresponding quantity input to preserve its value
+    var quantityInput = document.querySelector('input.quantity[data-line-id="' + line + '"]');
+    var currentQuantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
+    
     console.log('🛒 LOCATION UPDATE REQUEST:');
     console.log('Line:', line);
     console.log('Location:', location);
+    console.log('Preserving quantity:', currentQuantity);
     
     el.disabled = true;
     el.classList.add('is-updating');
     
-    // Update cart item properties
+    // Update cart item properties while preserving quantity
     fetch('/cart/change.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        line: Number(line), 
+        line: Number(line),
+        quantity: Number(currentQuantity),
         properties: { 'Location': location }
       })
     })
@@ -265,6 +271,7 @@
     .then(function(cart){
       console.log('✅ LOCATION UPDATE SUCCESS:');
       console.log('Cart object:', cart);
+      console.log('Quantity preserved:', cart.items[line - 1].quantity);
       
       // Re-enable input
       el.disabled = false;
