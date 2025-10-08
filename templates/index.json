@@ -10,24 +10,6 @@
 {
   "wrapper": "div.index-sections",
   "sections": {
-    "header": {
-      "type": "header",
-      "settings": {
-        "logo": "",
-        "logo_max_width": 200,
-        "main_linklist": "main-menu",
-        "menu_alignment": "center",
-        "nav_border": "double",
-        "nav_separator": "solid",
-        "show_currency_selector": false,
-        "show_locale_selector": false,
-        "show_search": false,
-        "show_cart": false,
-        "cart_icon": "cart",
-        "cart_text": "Cart",
-        "show_cart_count": true
-      }
-    },
     "1759778761ab6ac403": {
       "type": "_blocks",
       "blocks": {
@@ -40,7 +22,7 @@
             "cart_icon_size": 20,
             "cart_text_size": 14,
             "background_color": "#eeeeee",
-            "text_color": "#ffffff",
+            "text_color": "#d29800",
             "text_hover_color": "#d29800",
             "border_color": "#c2c1cc",
             "cart_count_bg_color": "#ab7d07",
@@ -63,6 +45,30 @@
         "logo_link": "/",
         "logo_max_width": 400,
         "background_color": "#ffffff"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "show_announcement_message": false,
+        "announcement_homepage_only": false,
+        "announcement_message": "Announcement message",
+        "announcement_link": "",
+        "announcement_color": "#444444",
+        "announcement_text_color": "#ffffff",
+        "show_locale_selector": false,
+        "show_currency_selector": false,
+        "fix_top_bar": true,
+        "search_box_top_bar": true,
+        "top_bar_linklist": "",
+        "phone_number": "",
+        "logo_width": 360,
+        "logo_alignment": "center",
+        "header_social_icons": false,
+        "main_linklist": "main-menu",
+        "menu_alignment": "center",
+        "nav_border": "double",
+        "nav_separator": "solid"
       }
     },
     "slideshow": {
