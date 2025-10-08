@@ -135,16 +135,12 @@
                 </p>
     
                 {%- assign current_variant = item.variant -%}
-                {%- if current_variant.available -%}
-                  {%- if current_variant.inventory_management == blank -%}
-                    <p class="cart_product_status">In Stock</p>
-                  {%- elsif current_variant.inventory_quantity > 0 -%}
-                    <p class="cart_product_status">{{ current_variant.inventory_quantity }} In Stock</p>
-                  {%- else -%}
-                    <p class="cart_product_status">By Special Order</p>
-                  {%- endif -%}
+                {%- if current_variant.available and current_variant.inventory_quantity > 0 -%}
+                  <p class="cart_product_status cart_product_status--in-stock">{{ current_variant.inventory_quantity }} In Stock</p>
+                {%- elsif current_variant.available and current_variant.inventory_management == blank -%}
+                  <p class="cart_product_status cart_product_status--in-stock">In Stock</p>
                 {%- else -%}
-                  <p class="cart_product_status">By Special Order</p>
+                  <p class="cart_product_status cart_product_status--special-order">By Special Order</p>
                 {%- endif -%}
                 
                 {% comment %} Debug info - remove after testing {% endcomment %}
@@ -482,6 +478,23 @@
 
 {% comment %} Include cart persistence enhancement {% endcomment %}
 {% render 'cart-persistence-enhancement' %}
+
+<style>
+  .cart_product_status {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    list-style: none !important;
+    margin: 0 0 7px 0 !important;
+  }
+  
+  .cart_product_status--in-stock {
+    color: #28a745 !important;
+  }
+  
+  .cart_product_status--special-order {
+    color: #d4af37 !important;
+  }
+</style>
 
 {% schema %}
   {
