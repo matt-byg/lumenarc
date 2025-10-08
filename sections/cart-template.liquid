@@ -145,7 +145,12 @@
                   {%- endif -%}
                 {%- else -%}
                   <p class="cart_product_status">By Special Order</p>
-                {%- endif -%} 
+                {%- endif -%}
+                
+                {% comment %} Debug info - remove after testing {% endcomment %}
+                <p style="font-size: 10px; color: #999;">
+                  Cart Debug: Available={{ current_variant.available }}, Qty={{ current_variant.inventory_quantity }}, Mgmt={{ current_variant.inventory_management }}
+                </p> 
 
               <div class="contact__form-location">
                 {% comment %}<label for="contactFormLocation_{{ totalQty }}">
