@@ -36,9 +36,24 @@
 
   <div class="container">
     <div class="one-whole column">
-      <p class="center cart-continue-link">
-        <a href="{{ continue_shopping_link }}">{{ 'layout.general.continue_shopping' | t }}</a>
-      </p>
+      <div class="cart-breadcrumb-row">
+        <div class="cart-breadcrumb-left">
+          <div class="breadcrumb">
+            <span>
+              <a href="{{ routes.root_url }}" title="{{ shop.name | escape }}">
+                <span>{{ 'general.breadcrumbs.home' | t }}</span>
+              </a>
+            </span>
+            <span class="icon-right-arrow"></span>
+            <span>{{ 'cart.general.title' | t }}</span>
+          </div>
+        </div>
+        <div class="cart-continue-right">
+          <a href="{{ continue_shopping_link }}" class="cart-continue-link">
+            {{ 'layout.general.continue_shopping' | t }}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -473,6 +488,68 @@
 
 {% comment %} Include cart persistence enhancement {% endcomment %}
 {% render 'cart-persistence-enhancement' %}
+
+<style>
+  .cart-breadcrumb-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+  }
+
+  .cart-breadcrumb-left {
+    flex: 1;
+  }
+
+  .cart-breadcrumb-left .breadcrumb {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+  }
+
+  .cart-breadcrumb-left .breadcrumb a {
+    color: #333333;
+    text-decoration: none;
+  }
+
+  .cart-breadcrumb-left .breadcrumb a:hover {
+    color: #007bff;
+  }
+
+  .cart-breadcrumb-left .icon-right-arrow {
+    margin: 0 8px;
+    color: #999999;
+  }
+
+  .cart-continue-right {
+    flex-shrink: 0;
+  }
+
+  .cart-continue-right .cart-continue-link {
+    color: #d29800;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .cart-continue-right .cart-continue-link:hover {
+    color: #ab7d07;
+  }
+
+  @media screen and (max-width: 768px) {
+    .cart-breadcrumb-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .cart-continue-right {
+      align-self: flex-end;
+    }
+  }
+</style>
 
 <style>
   .cart_product_status {
