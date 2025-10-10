@@ -711,17 +711,12 @@
         "description": {
           "type": "description",
           "settings": {}
-        },
-        "form": {
-          "type": "form",
-          "settings": {}
         }
       },
       "block_order": [
         "title",
         "price",
-        "description",
-        "form"
+        "description"
       ],
       "settings": {
         "title": "Featured product",
